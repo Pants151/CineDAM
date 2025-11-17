@@ -223,7 +223,7 @@
             tsBtnGuardar.ImageTransparentColor = Color.Magenta;
             tsBtnGuardar.Name = "tsBtnGuardar";
             tsBtnGuardar.Size = new Size(23, 22);
-            tsBtnGuardar.Text = "toolStripButton1";
+            tsBtnGuardar.Text = "Guardar configuración";
             tsBtnGuardar.Click += tsBtnGuardar_Click;
             // 
             // toolStripSeparator1

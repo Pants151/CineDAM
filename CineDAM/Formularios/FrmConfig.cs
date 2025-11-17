@@ -15,25 +15,51 @@ namespace CineDAM.Formularios
         {
             try
             {
-                if (Program.appCine.estadoApp == EstadoApp.Conectado)
+                if (Program.appCine.conectado) // Si ya estaba conectado, solo desconecta
                 {
                     SetControlesEstadoConexion(true);
                     // Cerrar conexión
                     Program.appCine.DesconectarDB();
                     SetControlesEstadoConexion(false);
                 }
-                else
+                else // Si no está conectado, intentamos conectar
                 {
-                    // Iniciar intento de conexión
-                    SetControlesEstadoConexion(true);
-                    Program.appCine.ConectarDB();
+                    // === ESTA ES LA PARTE NUEVA QUE ARREGLA EL ERROR ===
 
-                    // Tras el intento, actualizo
+                    // 1. Validamos que el puerto sea un número
+                    if (!int.TryParse(txtPuerto.Text, out int puertoNum))
+                    {
+                        MessageBox.Show("El puerto debe ser un valor numérico.", "Error de Validación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return; // Detiene la ejecución
+                    }
+
+                    // 2. Creamos un nuevo objeto de configuración con los datos de los TextBox
+                    ConfiguracionConexion config = new ConfiguracionConexion
+                    {
+                        servidor = txtServidor.Text,
+                        puerto = puertoNum,
+                        usuario = txtUsuario.Text,
+                        password = txtPassword.Text,
+                        baseDatos = txtBaseDatos.Text
+                    };
+
+                    // 3. Asignamos esta configuración a nuestra AppCine principal
+                    Program.appCine.configConexion = config;
+
+                    // =================== FIN DE LA CORRECCIÓN ===================
+
+
+                    // 4. Ahora sí, intentamos la conexión
+                    SetControlesEstadoConexion(true);
+                    Program.appCine.ConectarDB(); // Ahora 'configConexion' ya no es null
+
+                    // 5. Tras el intento, actualizamos los controles
                     SetControlesEstadoConexion(false);
                 }
             }
             catch (Exception ex)
             {
+                // Si falla (ej. contraseña incorrecta), lo mostramos
                 SetControlesEstadoConexion(false, ex.Message);
             }
         }
