@@ -42,7 +42,7 @@ namespace CineDAM.Modelos
             }
             catch (Exception ex)
             {
-                Program.appDAM.RegistrarLog("Cargando emisores", ex.Message);
+                Program.appCine.RegistrarLog("Cargando datos", ex.Message);
                 return false;
             }
         }

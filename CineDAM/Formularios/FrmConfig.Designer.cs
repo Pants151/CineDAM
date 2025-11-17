@@ -1,4 +1,4 @@
-﻿namespace FacturacionDAM.Formularios
+﻿namespace CineDAM.Formularios
 {
     partial class FrmConfig
     {

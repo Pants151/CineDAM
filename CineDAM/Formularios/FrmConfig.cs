@@ -1,8 +1,8 @@
 using MySql.Data.MySqlClient;
 using System.Text.Json;
-using FacturacionDAM.Modelos;
+using CineDAM.Modelos;
 
-namespace FacturacionDAM.Formularios
+namespace CineDAM.Formularios
 {
     public partial class FrmConfig : Form
     {
@@ -15,18 +15,18 @@ namespace FacturacionDAM.Formularios
         {
             try
             {
-                if (Program.appDAM.estadoApp == EstadoApp.Conectado)
+                if (Program.appCine.estadoApp == EstadoApp.Conectado)
                 {
                     SetControlesEstadoConexion(true);
                     // Cerrar conexión
-                    Program.appDAM.DesconectarDB();
+                    Program.appCine.DesconectarDB();
                     SetControlesEstadoConexion(false);
                 }
                 else
                 {
                     // Iniciar intento de conexión
                     SetControlesEstadoConexion(true);
-                    Program.appDAM.ConectarDB();
+                    Program.appCine.ConectarDB();
 
                     // Tras el intento, actualizo
                     SetControlesEstadoConexion(false);
@@ -57,8 +57,7 @@ namespace FacturacionDAM.Formularios
                 btnConexion.Enabled = true;
                 tsProgressBarConexion.Style = ProgressBarStyle.Blocks;
 
-                if ((Program.appDAM.estadoApp == EstadoApp.Conectado)
-                    || (Program.appDAM.estadoApp == EstadoApp.ConectadoSinEmisor))
+                if (Program.appCine.estadoApp == EstadoApp.Conectado)
                 {
                     tsStatusLabel.Text = "Conexión establecida correctamente.";
                     tsStatusLabel.ForeColor = Color.Green;
@@ -111,13 +110,13 @@ namespace FacturacionDAM.Formularios
                     SetControlesEstadoConexion(true);
 
                     // Configuro y conecto la base de datos
-                    Program.appDAM.ConfiguraYConectaDB(dlg.FileName);
+                    Program.appCine.ConfiguraYConectaDB(dlg.FileName);
 
-                    txtServidor.Text = Program.appDAM.configConexion.servidor;
-                    txtPuerto.Text = Program.appDAM.configConexion.puerto.ToString();
-                    txtUsuario.Text = Program.appDAM.configConexion.usuario;
-                    txtPassword.Text = Program.appDAM.configConexion.password;
-                    txtBaseDatos.Text = Program.appDAM.configConexion.baseDatos;
+                    txtServidor.Text = Program.appCine.configConexion.servidor;
+                    txtPuerto.Text = Program.appCine.configConexion.puerto.ToString();
+                    txtUsuario.Text = Program.appCine.configConexion.usuario;
+                    txtPassword.Text = Program.appCine.configConexion.password;
+                    txtBaseDatos.Text = Program.appCine.configConexion.baseDatos;
 
                     // Ajusto controles
                     SetControlesEstadoConexion(false);
@@ -162,14 +161,13 @@ namespace FacturacionDAM.Formularios
 
         private void FrmConnection_Load(object sender, EventArgs e)
         {
-            if ( (Program.appDAM.estadoApp == EstadoApp.Conectado) ||
-                (Program.appDAM.estadoApp == EstadoApp.ConectadoSinEmisor) )
+            if (Program.appCine.estadoApp == EstadoApp.Conectado)
             {
-                txtServidor.Text = Program.appDAM.configConexion.servidor;
-                txtPuerto.Text = Program.appDAM.configConexion.puerto.ToString();
-                txtUsuario.Text = Program.appDAM.configConexion.usuario;
-                txtPassword.Text = Program.appDAM.configConexion.password;
-                txtBaseDatos.Text = Program.appDAM.configConexion.baseDatos;
+                txtServidor.Text = Program.appCine.configConexion.servidor;
+                txtPuerto.Text = Program.appCine.configConexion.puerto.ToString();
+                txtUsuario.Text = Program.appCine.configConexion.usuario;
+                txtPassword.Text = Program.appCine.configConexion.password;
+                txtBaseDatos.Text = Program.appCine.configConexion.baseDatos;
             }
             else
             {

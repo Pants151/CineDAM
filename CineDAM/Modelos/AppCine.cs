@@ -6,7 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Text.Json;
 
-namespace FacturacionDAM.Modelos {
+namespace CineDAM.Modelos {
     public class AppCine {
 
         public ConfiguracionConexion configConexion;        // Objeto con la configuración de la conexión a la BD.
@@ -20,7 +20,7 @@ namespace FacturacionDAM.Modelos {
         public bool conectado => (_conexion != null) && (_conexion.State == System.Data.ConnectionState.Open);
 
         public string ultimoError { get; private set; }     // Ultimo error registrado.
-        public DebugDAM debug { get; private set; }         // Objeto para la depuración
+        //public DebugDAM debug { get; private set; }         // Objeto para la depuración
 
         private MySqlConnection _conexion = null;           // Cliente MySQL para comunicarnos con la base de datos
 
@@ -35,7 +35,7 @@ namespace FacturacionDAM.Modelos {
             // Instancio el cliente mysql.
             _conexion = new MySqlConnection();
 
-            usuarioLogueado = null;
+            //usuarioLogueado = null;
 
             // Inicializo la aplicación
             InitApp();            
@@ -53,7 +53,7 @@ namespace FacturacionDAM.Modelos {
 
             // Creación del objeto para registro de los logs
             rutaLog = Path.Combine(rutaBase, "logs", "info.log");
-            debug = new DebugDAM (rutaLog);
+            //debug = new DebugDAM (rutaLog);
 
             // Configuro y me conecto a la base de datos.
             ConfiguraYConectaDB(rutaConfigDB);
@@ -67,7 +67,7 @@ namespace FacturacionDAM.Modelos {
             configConexion = CargarConfiguracionDB(aRutaConfig);
 
             // Intento la conexión a la base de datos
-            if (configConexion != null)
+            /*if (configConexion != null)
             {
                 if (ConectarDB()) {
                     if (usuarioLogueado == null)
@@ -79,7 +79,7 @@ namespace FacturacionDAM.Modelos {
                     estadoApp = (ultimoError != "") ? EstadoApp.Error : EstadoApp.SinConexion;
             }
             else
-                estadoApp = (ultimoError != "") ? EstadoApp.Error : EstadoApp.SinConexion;
+                estadoApp = (ultimoError != "") ? EstadoApp.Error : EstadoApp.SinConexion;*/
 
         }
 
@@ -163,7 +163,7 @@ namespace FacturacionDAM.Modelos {
         public void RegistrarLog(string proceso, string mensaje)
         {
             string textoLog = $"{DateTime.Now:yyyy-MM-dd} | {DateTime.Now:HH:mm:ss} | {proceso} | {mensaje}";
-            debug.GuardarLog(textoLog);
+            //debug.GuardarLog(textoLog);
         }
 
         /// <summary>
