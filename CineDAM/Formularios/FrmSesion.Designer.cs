@@ -2,15 +2,8 @@
 {
     partial class FrmSesion
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmSesion));
@@ -33,17 +22,17 @@
             btn_cancelar = new Button();
             btn_aceptar = new Button();
             panel2 = new Panel();
+            numPrecio = new NumericUpDown();
+            dtpHora = new DateTimePicker();
+            cmbSala = new ComboBox();
+            cmbPelicula = new ComboBox();
             lblSala = new Label();
             lblHora = new Label();
             lblPrecio = new Label();
             lblPelicula = new Label();
-            cmbPelicula = new ComboBox();
-            cmbSala = new ComboBox();
-            dtpHora = new DateTimePicker();
-            txtPrecio = new NumericUpDown();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)txtPrecio).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numPrecio).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -51,7 +40,7 @@
             panel1.Controls.Add(btn_cancelar);
             panel1.Controls.Add(btn_aceptar);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 130);
+            panel1.Location = new Point(0, 160);
             panel1.Name = "panel1";
             panel1.Size = new Size(566, 60);
             panel1.TabIndex = 0;
@@ -84,7 +73,7 @@
             // 
             // panel2
             // 
-            panel2.Controls.Add(txtPrecio);
+            panel2.Controls.Add(numPrecio);
             panel2.Controls.Add(dtpHora);
             panel2.Controls.Add(cmbSala);
             panel2.Controls.Add(cmbPelicula);
@@ -95,8 +84,46 @@
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(566, 130);
+            panel2.Size = new Size(566, 160);
             panel2.TabIndex = 1;
+            // 
+            // numPrecio
+            // 
+            numPrecio.DecimalPlaces = 2;
+            numPrecio.Location = new Point(414, 80);
+            numPrecio.Maximum = new decimal(new int[] { 100, 0, 0, 0 });
+            numPrecio.Name = "numPrecio";
+            numPrecio.Size = new Size(120, 23);
+            numPrecio.TabIndex = 7;
+            numPrecio.TextAlign = HorizontalAlignment.Right;
+            numPrecio.Value = new decimal(new int[] { 5, 0, 0, 0 });
+            // 
+            // dtpHora
+            // 
+            dtpHora.CustomFormat = "dd/MM/yyyy HH:mm";
+            dtpHora.Format = DateTimePickerFormat.Custom;
+            dtpHora.Location = new Point(80, 77);
+            dtpHora.Name = "dtpHora";
+            dtpHora.Size = new Size(139, 23);
+            dtpHora.TabIndex = 6;
+            // 
+            // cmbSala
+            // 
+            cmbSala.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbSala.FormattingEnabled = true;
+            cmbSala.Location = new Point(414, 22);
+            cmbSala.Name = "cmbSala";
+            cmbSala.Size = new Size(121, 23);
+            cmbSala.TabIndex = 5;
+            // 
+            // cmbPelicula
+            // 
+            cmbPelicula.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbPelicula.FormattingEnabled = true;
+            cmbPelicula.Location = new Point(80, 22);
+            cmbPelicula.Name = "cmbPelicula";
+            cmbPelicula.Size = new Size(200, 23);
+            cmbPelicula.TabIndex = 4;
             // 
             // lblSala
             // 
@@ -110,7 +137,7 @@
             // lblHora
             // 
             lblHora.AutoSize = true;
-            lblHora.Location = new Point(39, 80);
+            lblHora.Location = new Point(39, 83);
             lblHora.Name = "lblHora";
             lblHora.Size = new Size(33, 15);
             lblHora.TabIndex = 2;
@@ -134,43 +161,11 @@
             lblPelicula.TabIndex = 0;
             lblPelicula.Text = "Película";
             // 
-            // cmbPelicula
-            // 
-            cmbPelicula.FormattingEnabled = true;
-            cmbPelicula.Location = new Point(80, 22);
-            cmbPelicula.Name = "cmbPelicula";
-            cmbPelicula.Size = new Size(121, 23);
-            cmbPelicula.TabIndex = 4;
-            // 
-            // cmbSala
-            // 
-            cmbSala.FormattingEnabled = true;
-            cmbSala.Location = new Point(414, 22);
-            cmbSala.Name = "cmbSala";
-            cmbSala.Size = new Size(121, 23);
-            cmbSala.TabIndex = 5;
-            // 
-            // dtpHora
-            // 
-            dtpHora.CustomFormat = "dd/MM/yyyy HH:mm";
-            dtpHora.Format = DateTimePickerFormat.Custom;
-            dtpHora.Location = new Point(80, 74);
-            dtpHora.Name = "dtpHora";
-            dtpHora.Size = new Size(139, 23);
-            dtpHora.TabIndex = 6;
-            // 
-            // txtPrecio
-            // 
-            txtPrecio.Location = new Point(414, 80);
-            txtPrecio.Name = "txtPrecio";
-            txtPrecio.Size = new Size(120, 23);
-            txtPrecio.TabIndex = 7;
-            // 
             // FrmSesion
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(566, 190);
+            ClientSize = new Size(566, 220);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "FrmSesion";
@@ -179,7 +174,7 @@
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)txtPrecio).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numPrecio).EndInit();
             ResumeLayout(false);
         }
 
@@ -196,6 +191,6 @@
         private DateTimePicker dtpHora;
         private ComboBox cmbSala;
         private ComboBox cmbPelicula;
-        private NumericUpDown txtPrecio;
+        private NumericUpDown numPrecio;
     }
 }

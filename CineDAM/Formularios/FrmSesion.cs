@@ -14,7 +14,6 @@ namespace CineDAM.Formularios
 {
     public partial class FrmSesion : Form
     {
-
         private BindingSource _bs;
         private Tabla _tabla;
         public bool edicion;
@@ -24,108 +23,83 @@ namespace CineDAM.Formularios
             InitializeComponent();
             _bs = bs;
             _tabla = tabla;
-
-        }
-
-        public FrmSesion()
-        {
-            InitializeComponent();
-            // No inicializamos _bs ni _tabla aquí porque haremos el INSERT manual
         }
 
         private void FrmSesion_Load(object sender, EventArgs e)
         {
-            CargarCombos(); // ¡Importante cargar esto primero!
+            CargarCombos();
 
-            // Solo enlazamos datos si NO estamos creando uno nuevo (es decir, si nos pasaron un binding source)
-            if (_bs != null)
-            {
-                cmbPelicula.DataBindings.Add("SelectedValue", _bs, "id_pelicula");
-                cmbSala.DataBindings.Add("SelectedValue", _bs, "id_sala");
-                // Use overload that provides a fallback for DBNull (nullValue).
-                dtpHora.DataBindings.Add("Value", _bs, "hora_inicio", true, DataSourceUpdateMode.OnPropertyChanged, DateTime.Now);
-                txtPrecio.DataBindings.Add("Text", _bs, "precio"); 
-            }
-            
+            // 1. Limpiamos bindings previos
+            cmbPelicula.DataBindings.Clear();
+            cmbSala.DataBindings.Clear();
+            dtpHora.DataBindings.Clear();
+            numPrecio.DataBindings.Clear();
+
+            // 2. Enlazamos datos
+            // IMPORTANTE: Enlazamos "SelectedValue" al ID de la tabla foránea
+            cmbPelicula.DataBindings.Add("SelectedValue", _bs, "id_pelicula", true, DataSourceUpdateMode.OnPropertyChanged);
+            cmbSala.DataBindings.Add("SelectedValue", _bs, "id_sala", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            // DateTimePicker
+            // Usamos DateTime.Now como valor por defecto si es una nueva sesión
+            dtpHora.DataBindings.Add("Value", _bs, "hora_inicio", true, DataSourceUpdateMode.OnPropertyChanged, DateTime.Now);
+
+            // NumericUpDown
+            numPrecio.DataBindings.Add("Value", _bs, "precio", true, DataSourceUpdateMode.OnPropertyChanged, 0);
         }
 
         private void btn_aceptar_Click(object sender, EventArgs e)
         {
-            // 1. Validaciones básicas
-            if (cmbPelicula.SelectedIndex == -1 || cmbSala.SelectedIndex == -1)
-            {
-                MessageBox.Show("Debes seleccionar una película y una sala.");
-                return;
-            }
+            if (!ValidarDatos()) return;
 
+            // 1. Recoger los valores del formulario
             int idPeli = (int)cmbPelicula.SelectedValue;
             int idSala = (int)cmbSala.SelectedValue;
+            decimal precio = numPrecio.Value;
             DateTime hora = dtpHora.Value;
-            string precioStr = txtPrecio.Text.Replace(",", ".");
+
+            // 2. Obtener la fila actual para saber si es nueva
+            DataRowView row = (DataRowView)_bs.Current;
+            bool esNueva = row.IsNew; // Detecta si venimos de un .AddNew()
 
             string sql = "";
-            int idSesion = -1; // guardamos aquí el id cuando estemos en modo edición
 
-            // ¿CÓMO SABEMOS SI ES EDICIÓN?
-            // Si _bs NO es null, significa que venimos del botón "Editar" (pasamos el BindingSource en el constructor).
-            // Si _bs ES null, venimos del botón "Nuevo" (constructor vacío).
-
-            if (_bs == null)
+            // 3. Construir la consulta SQL
+            if (esNueva)
             {
-                // MODO INSERTAR (Tu código actual)
-                sql = $"INSERT INTO Sesion (id_pelicula, id_sala, hora_inicio, precio) " +
-                      $"VALUES ({idPeli}, {idSala}, '{hora:yyyy-MM-dd HH:mm:ss}', {precioStr})";
+                // INSERTAR
+                sql = "INSERT INTO Sesion (id_pelicula, id_sala, hora_inicio, precio) " +
+                      "VALUES (@peli, @sala, @hora, @precio)";
             }
             else
             {
-                // MODO ACTUALIZAR (Nuevo)
-                // Necesitamos el ID de la sesión que estamos editando. 
-                // Lo sacamos del BindingSource que nos pasaron.
-                DataRowView filaActual = (DataRowView)_bs.Current;
-                idSesion = (int)filaActual["id_sesion"];
-
-                sql = $"UPDATE Sesion SET " +
-                      $"id_pelicula = {idPeli}, " +
-                      $"id_sala = {idSala}, " +
-                      $"hora_inicio = '{hora:yyyy-MM-dd HH:mm:ss}', " +
-                      $"precio = {precioStr} " +
-                      $"WHERE id_sesion = {idSesion}";
+                // ACTUALIZAR
+                // Necesitamos el ID original para el WHERE
+                int idSesion = Convert.ToInt32(row["id_sesion"]);
+                sql = "UPDATE Sesion SET id_pelicula=@peli, id_sala=@sala, hora_inicio=@hora, precio=@precio " +
+                      "WHERE id_sesion = @id";
             }
 
-            // 4. Ejecutarla usando nuestra conexión global
             try
             {
-                // Aseguramos que los cambios del binding se finalicen
-                _bs?.EndEdit();
-
-                // Creamos un comando MySQL
+                // 4. Ejecutar la consulta manualmente
                 using (var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, Program.appCine.LaConexion))
                 {
-                    cmd.ExecuteNonQuery(); // Ejecuta el INSERT/UPDATE
+                    cmd.Parameters.AddWithValue("@peli", idPeli);
+                    cmd.Parameters.AddWithValue("@sala", idSala);
+                    cmd.Parameters.AddWithValue("@hora", hora);
+                    cmd.Parameters.AddWithValue("@precio", precio);
+
+                    if (!esNueva) cmd.Parameters.AddWithValue("@id", row["id_sesion"]);
+
+                    cmd.ExecuteNonQuery();
                 }
 
-                // Si hemos editado (tenemos BindingSource), refrescamos la tabla y reposicionamos
-                if (_bs != null && idSesion > 0)
-                {
-                    _tabla?.Refrescar();
+                // 5. Cerrar limpiamente
+                // Cancelamos la edición del BindingSource porque ya hemos guardado en BD 
+                // y queremos que la ventana padre recargue los datos frescos (con los nombres de peli/sala correctos)
+                _bs.CancelEdit();
 
-                    if (_tabla?.LaTabla != null)
-                    {
-                        int idx = -1;
-                        for (int i = 0; i < _tabla.LaTabla.Rows.Count; i++)
-                        {
-                            if (Convert.ToInt32(_tabla.LaTabla.Rows[i]["id_sesion"]) == idSesion)
-                            {
-                                idx = i;
-                                break;
-                            }
-                        }
-                        if (idx >= 0) _bs.Position = idx;
-                        else _bs.ResetBindings(false); // fallback si no encuentra la fila
-                    }
-                }
-
-                // Si llegamos aquí, todo ha ido bien
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -143,43 +117,34 @@ namespace CineDAM.Formularios
 
         private bool ValidarDatos()
         {
+            if (cmbPelicula.SelectedValue == null)
+            {
+                MessageBox.Show("Debe seleccionar una película.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmbPelicula.Focus();
+                return false;
+            }
+
+            if (cmbSala.SelectedValue == null)
+            {
+                MessageBox.Show("Debe seleccionar una sala.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmbSala.Focus();
+                return false;
+            }
+
+            // Validar que la fecha sea futura (opcional, pero recomendado para gestión)
             /*
-            if (string.IsNullOrWhiteSpace(txt_nifcif.Text))
+            if (dtpHora.Value < DateTime.Now)
             {
-                MessageBox.Show("El campo NIF/CIF no puede estar vacío.");
-                txt_nifcif.Focus();
+                MessageBox.Show("La sesión debe ser en una fecha y hora futuras.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
+            */
 
-            if (string.IsNullOrWhiteSpace(txt_razonsocial.Text))
+            if (numPrecio.Value < 0)
             {
-                MessageBox.Show("El campo \"Nombre Comercial\" no puede estar vacío.");
-                txt_razonsocial.Focus();
+                MessageBox.Show("El precio no puede ser negativo.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
-
-            //Validacion 2: Si el email no está vacio, que sea un email valido
-            string email = txt_email.Text.Trim();
-            if (!string.IsNullOrWhiteSpace(email) &&
-                !System.Text.RegularExpressions.Regex.IsMatch(email,
-                    @"^[a-zA-Z0-9._%-+]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
-            {
-                MessageBox.Show("El email introducido no es válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txt_email.Focus();
-                return false;
-            }
-
-            //Validacion 3: NIF/CIF duplicado
-            if (NifDuplicado(txt_nifcif.Text.Trim()))
-            {
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("El NIF/CIF introducido ya existe en otro emisor. Por favor, introduce uno diferente.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txt_nifcif.Focus();
-                return false;
-            }*/
 
             return true;
         }
@@ -191,8 +156,9 @@ namespace CineDAM.Formularios
             if (tPeliculas.InicializarDatos("SELECT id_pelicula, titulo FROM Pelicula"))
             {
                 cmbPelicula.DataSource = tPeliculas.LaTabla;
-                cmbPelicula.DisplayMember = "titulo";      // Lo que se ve
-                cmbPelicula.ValueMember = "id_pelicula";   // Lo que se guarda (ID)
+                cmbPelicula.DisplayMember = "titulo";
+                cmbPelicula.ValueMember = "id_pelicula";
+                cmbPelicula.SelectedIndex = -1; // Para que empiece vacío si es nuevo
             }
 
             // 2. Cargar Salas
@@ -202,6 +168,7 @@ namespace CineDAM.Formularios
                 cmbSala.DataSource = tSalas.LaTabla;
                 cmbSala.DisplayMember = "nombre";
                 cmbSala.ValueMember = "id_sala";
+                cmbSala.SelectedIndex = -1;
             }
         }
     }

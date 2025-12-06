@@ -9,31 +9,55 @@ namespace CineDAM.Formularios
         public FrmConfig()
         {
             InitializeComponent();
+            // Aseguramos que el evento Load se dispara
+            this.Load += FrmConnection_Load;
+        }
+
+        private void FrmConnection_Load(object sender, EventArgs e)
+        {
+            // Esto funciona aunque el estado sea 'AdminLogueado'
+            if (Program.appCine.conectado && Program.appCine.configConexion != null)
+            {
+                txtServidor.Text = Program.appCine.configConexion.servidor;
+                txtPuerto.Text = Program.appCine.configConexion.puerto.ToString();
+                txtUsuario.Text = Program.appCine.configConexion.usuario;
+                txtPassword.Text = Program.appCine.configConexion.password;
+                txtBaseDatos.Text = Program.appCine.configConexion.baseDatos;
+            }
+            else
+            {
+                // Si no hay conexión o configuración, limpiamos (o dejamos valores por defecto)
+                txtServidor.Text = "";
+                txtPuerto.Text = "3306";
+                txtUsuario.Text = "root";
+                txtPassword.Text = "";
+                txtBaseDatos.Text = "cinedam";
+            }
+
+            // Actualizamos el estado visual de los botones y paneles
+            SetControlesEstadoConexion(false);
         }
 
         private void btnProbarConexion_Click(object sender, EventArgs e)
         {
             try
             {
-                if (Program.appCine.conectado) // Si ya estaba conectado, solo desconecta
+                if (Program.appCine.conectado) // Si ya estaba conectado, desconecta
                 {
                     SetControlesEstadoConexion(true);
-                    // Cerrar conexión
                     Program.appCine.DesconectarDB();
                     SetControlesEstadoConexion(false);
                 }
                 else // Si no está conectado, intentamos conectar
                 {
-                    // === ESTA ES LA PARTE NUEVA QUE ARREGLA EL ERROR ===
-
-                    // 1. Validamos que el puerto sea un número
+                    // Validar puerto
                     if (!int.TryParse(txtPuerto.Text, out int puertoNum))
                     {
-                        MessageBox.Show("El puerto debe ser un valor numérico.", "Error de Validación", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return; // Detiene la ejecución
+                        MessageBox.Show("El puerto debe ser un valor numérico.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
 
-                    // 2. Creamos un nuevo objeto de configuración con los datos de los TextBox
+                    // Crear configuración nueva con los datos del formulario
                     ConfiguracionConexion config = new ConfiguracionConexion
                     {
                         servidor = txtServidor.Text,
@@ -43,23 +67,15 @@ namespace CineDAM.Formularios
                         baseDatos = txtBaseDatos.Text
                     };
 
-                    // 3. Asignamos esta configuración a nuestra AppCine principal
                     Program.appCine.configConexion = config;
 
-                    // =================== FIN DE LA CORRECCIÓN ===================
-
-
-                    // 4. Ahora sí, intentamos la conexión
                     SetControlesEstadoConexion(true);
-                    Program.appCine.ConectarDB(); // Ahora 'configConexion' ya no es null
-
-                    // 5. Tras el intento, actualizamos los controles
+                    Program.appCine.ConectarDB();
                     SetControlesEstadoConexion(false);
                 }
             }
             catch (Exception ex)
             {
-                // Si falla (ej. contraseña incorrecta), lo mostramos
                 SetControlesEstadoConexion(false, ex.Message);
             }
         }
@@ -70,55 +86,52 @@ namespace CineDAM.Formularios
 
             if (enProceso)
             {
-                // Mostrar mensajes en la barra de estado.
-                tsStatusLabel.Text = enProceso ? "Conectando ..." : "";
+                tsStatusLabel.Text = "Procesando...";
                 tsStatusLabel.ForeColor = Color.Black;
                 tsProgressBarConexion.Style = ProgressBarStyle.Marquee;
                 btnConexion.Enabled = false;
-                pnData.Enabled = false;
+                pnData.Enabled = false; // Siempre deshabilitado mientras procesa
             }
             else
             {
-                pnData.Enabled = true;
-                btnConexion.Enabled = true;
                 tsProgressBarConexion.Style = ProgressBarStyle.Blocks;
+                btnConexion.Enabled = true;
 
-                if (Program.appCine.estadoApp == EstadoApp.Conectado)
+                // CAMBIO CLAVE: Usamos .conectado aquí también
+                if (Program.appCine.conectado)
                 {
+                    // Si estamos conectados:
+                    // 1. Bloqueamos los campos para no editar en caliente
+                    pnData.Enabled = false;
+
+                    // 2. Botón sirve para desconectar
+                    btnConexion.Text = "Cerrar conexión";
+
+                    // 3. Status verde
                     tsStatusLabel.Text = "Conexión establecida correctamente.";
                     tsStatusLabel.ForeColor = Color.Green;
-                    btnConexion.Text = "Cerrar conexión";
                 }
                 else
                 {
+                    // Si NO estamos conectados:
+                    // 1. Habilitamos campos para poder escribir
+                    pnData.Enabled = true;
+
+                    // 2. Botón sirve para conectar
+                    btnConexion.Text = "Conectar";
+
                     if (aError == "")
                     {
                         tsStatusLabel.Text = "Conexión cerrada.";
                         tsStatusLabel.ForeColor = Color.Black;
-                        btnConexion.Text = "Conectar";
                     }
                     else
                     {
-                        tsStatusLabel.Text = "Se ha producido un error: " + aError;
+                        tsStatusLabel.Text = "Error: " + aError;
                         tsStatusLabel.ForeColor = Color.Red;
                     }
                 }
             }
-        }
-
-
-        private void GuardarConfiguracionEnArchivo(string aRuta, ConfiguracionConexion aConfig)
-        {
-            JsonSerializerOptions options = new JsonSerializerOptions();
-            options.WriteIndented = true;
-            string jsonText = JsonSerializer.Serialize(aConfig, options);
-
-            // Podría haber hecho lo anterior en la siguiente línea:
-            // string json = JsonSerializer.Serialize(aConfig, new JsonSerializerOptions { WriteIndented = true });
-
-            File.WriteAllText(aRuta, jsonText);
-            tsLbRutaConfig.Text = aRuta;
-
         }
 
         private void tsBtnCargar_Click(object sender, EventArgs e)
@@ -129,38 +142,27 @@ namespace CineDAM.Formularios
                 Title = "Seleccionar archivo de configuración"
             };
 
-            if (dlg.ShowDialog() == DialogResult.OK) {
-                
-                try {
-                    // Mientras se conecta desactivo controles.
-                    SetControlesEstadoConexion(true);
-
-                    // Configuro y conecto la base de datos
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
                     Program.appCine.ConfiguraYConectaDB(dlg.FileName);
-
-                    txtServidor.Text = Program.appCine.configConexion.servidor;
-                    txtPuerto.Text = Program.appCine.configConexion.puerto.ToString();
-                    txtUsuario.Text = Program.appCine.configConexion.usuario;
-                    txtPassword.Text = Program.appCine.configConexion.password;
-                    txtBaseDatos.Text = Program.appCine.configConexion.baseDatos;
-
-                    // Ajusto controles
-                    SetControlesEstadoConexion(false);
+                    // Forzamos la recarga de los datos en pantalla llamando al Load o copiando la lógica
+                    FrmConnection_Load(sender, e);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al cargar el archivo:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Error al cargar: " + ex.Message);
                 }
             }
         }
 
         private void tsBtnGuardar_Click(object sender, EventArgs e)
         {
-
             using SaveFileDialog dlg = new SaveFileDialog
             {
                 Filter = "Archivo JSON|*.json",
-                Title = "Guardar configuración como..."
+                Title = "Guardar configuración"
             };
 
             if (dlg.ShowDialog() == DialogResult.OK)
@@ -176,37 +178,16 @@ namespace CineDAM.Formularios
 
                 try
                 {
-                    GuardarConfiguracionEnArchivo(dlg.FileName, config);
+                    string jsonText = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+                    File.WriteAllText(dlg.FileName, jsonText);
+                    tsLbRutaConfig.Text = dlg.FileName;
+                    MessageBox.Show("Configuración guardada.");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al guardar:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Error al guardar: " + ex.Message);
                 }
             }
-        }
-
-        private void FrmConnection_Load(object sender, EventArgs e)
-        {
-            if (Program.appCine.estadoApp == EstadoApp.Conectado)
-            {
-                txtServidor.Text = Program.appCine.configConexion.servidor;
-                txtPuerto.Text = Program.appCine.configConexion.puerto.ToString();
-                txtUsuario.Text = Program.appCine.configConexion.usuario;
-                txtPassword.Text = Program.appCine.configConexion.password;
-                txtBaseDatos.Text = Program.appCine.configConexion.baseDatos;
-            }
-            else
-            {
-                txtServidor.Text = "";
-                txtPuerto.Text = "";
-                txtUsuario.Text = "";
-                txtPassword.Text = "";
-                txtBaseDatos.Text = "";
-            }
-
-            // Ajusto controles
-            SetControlesEstadoConexion(false);
-
         }
     }
 }

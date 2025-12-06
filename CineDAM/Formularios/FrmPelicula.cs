@@ -1,23 +1,16 @@
 ﻿using CineDAM.Modelos;
-using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.IO; // Necesario para manejar archivos
 
 namespace CineDAM.Formularios
 {
     public partial class FrmPelicula : Form
     {
-
         private BindingSource _bs;
         private Tabla _tabla;
         public bool edicion;
+
+        // Ruta base donde guardaremos las imágenes
+        private string _rutaImagenes = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Imagenes");
 
         public FrmPelicula(BindingSource bs, Tabla tabla)
         {
@@ -25,33 +18,85 @@ namespace CineDAM.Formularios
             _bs = bs;
             _tabla = tabla;
 
+            // Crear carpeta si no existe
+            if (!Directory.Exists(_rutaImagenes)) Directory.CreateDirectory(_rutaImagenes);
         }
 
         private void FrmPelicula_Load(object sender, EventArgs e)
         {
-            // 1. Limpiamos bindings previos para evitar duplicados si se reabre
+            cmbClasificacion.Items.Clear();
+            cmbClasificacion.Items.AddRange(new string[] { "Todos", "Apta", "Mayores 7", "Mayores 12", "Mayores 16", "Mayores 18", "Mayores 19" });
+
             txtTitulo.DataBindings.Clear();
-            txtDuracion.DataBindings.Clear();
-            txtClasificacion.DataBindings.Clear();
+            numDuracion.DataBindings.Clear();
+            cmbClasificacion.DataBindings.Clear();
             txtPosterURL.DataBindings.Clear();
 
-            // 2. Añadimos los nuevos bindings.
-            // El tercer parámetro debe COINCIDIR EXACTAMENTE con el nombre de la columna en tu SQL de FrmBrowPeliculas.
-            // Tu SQL: SELECT ... titulo AS Titulo, ...
+            txtTitulo.DataBindings.Add("Text", _bs, "titulo", true);
+            numDuracion.DataBindings.Add("Value", _bs, "duracion_min", true, DataSourceUpdateMode.OnPropertyChanged, 0);
+            cmbClasificacion.DataBindings.Add("Text", _bs, "clasificacion", true);
+            txtPosterURL.DataBindings.Add("Text", _bs, "poster_url", true);
 
-            txtTitulo.DataBindings.Add("Text", _bs, "titulo");
-            txtDuracion.DataBindings.Add("Text", _bs, "duracion_min");
-            txtClasificacion.DataBindings.Add("Text", _bs, "clasificacion");
-            txtPosterURL.DataBindings.Add("Text", _bs, "poster_url");
+            // Cargar imagen en el PictureBox si ya existe ruta
+            if (txtPosterURL.Text.Length > 0)
+            {
+                CargarPrevisualizacion(txtPosterURL.Text);
+            }
+        }
+
+        private void btnSeleccionarImagen_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.bmp";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        // 1. Generar un nombre único para evitar duplicados (ej: poster_12345.jpg)
+                        string extension = Path.GetExtension(ofd.FileName);
+                        string nombreArchivo = $"poster_{DateTime.Now.Ticks}{extension}";
+                        string destino = Path.Combine(_rutaImagenes, nombreArchivo);
+
+                        // 2. Copiar la imagen a nuestra carpeta local
+                        File.Copy(ofd.FileName, destino, true);
+
+                        // 3. Guardar solo el nombre del archivo en el TextBox (y en la BD)
+                        txtPosterURL.Text = nombreArchivo;
+
+                        // 4. Mostrar
+                        CargarPrevisualizacion(nombreArchivo);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al cargar imagen: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        private void CargarPrevisualizacion(string nombreArchivo)
+        {
+            string rutaCompleta = Path.Combine(_rutaImagenes, nombreArchivo);
+            if (File.Exists(rutaCompleta))
+            {
+                // Usamos FileStream para no bloquear el archivo en disco
+                using (var fs = new FileStream(rutaCompleta, FileMode.Open, FileAccess.Read))
+                {
+                    pbPoster.Image = Image.FromStream(fs);
+                }
+            }
+            else
+            {
+                pbPoster.Image = null; // O poner una imagen "No disponible" por defecto
+            }
         }
 
         private void btn_aceptar_Click(object sender, EventArgs e)
         {
-            if (!ValidarDatos())
-            {
-                return;
-            }
+            if (!ValidarDatos()) return;
             _bs.EndEdit();
+            this.ValidateChildren();
             _tabla.GuardarCambios();
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -65,59 +110,17 @@ namespace CineDAM.Formularios
 
         private bool ValidarDatos()
         {
-            /*
-            if (string.IsNullOrWhiteSpace(txt_nifcif.Text))
+            if (string.IsNullOrWhiteSpace(txtTitulo.Text))
             {
-                MessageBox.Show("El campo NIF/CIF no puede estar vacío.");
-                txt_nifcif.Focus();
+                MessageBox.Show("El título es obligatorio.");
                 return false;
             }
-
-            if (string.IsNullOrWhiteSpace(txt_razonsocial.Text))
+            if (numDuracion.Value <= 0)
             {
-                MessageBox.Show("El campo \"Nombre Comercial\" no puede estar vacío.");
-                txt_razonsocial.Focus();
+                MessageBox.Show("La duración incorrecta.");
                 return false;
             }
-
-            //Validacion 2: Si el email no está vacio, que sea un email valido
-            string email = txt_email.Text.Trim();
-            if (!string.IsNullOrWhiteSpace(email) &&
-                !System.Text.RegularExpressions.Regex.IsMatch(email,
-                    @"^[a-zA-Z0-9._%-+]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
-            {
-                MessageBox.Show("El email introducido no es válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txt_email.Focus();
-                return false;
-            }
-
-            //Validacion 3: NIF/CIF duplicado
-            if (NifDuplicado(txt_nifcif.Text.Trim()))
-            {
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("El NIF/CIF introducido ya existe en otro emisor. Por favor, introduce uno diferente.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txt_nifcif.Focus();
-                return false;
-            }*/
-
             return true;
         }
-        /*private bool NifDuplicado(string nifcif)
-        {
-            using MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM EMISORES WHERE NIFCIF=@NIFCIF", Program.appDAM.LaConexion);
-            cmd.Parameters.AddWithValue("@NIFCIF", nifcif);
-            if (edicion && _bs.Current is DataRowView row)
-            {
-                int id = (int)row["id"];
-                cmd.CommandText += " AND id<>@ID";
-                cmd.Parameters.AddWithValue("@ID", id);
-            }
-
-            int count = Convert.ToInt32(cmd.ExecuteScalar());
-            return (count > 0);
-        }*/
     }
 }

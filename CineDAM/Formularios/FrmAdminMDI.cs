@@ -1,19 +1,33 @@
 using CineDAM.Modelos;
+using System.Drawing; // Necesario para los colores
+using System.Windows.Forms;
 
 namespace CineDAM.Formularios
 {
     public partial class FrmAdminMDI : Form
     {
+        // Timer para mantener la interfaz actualizada automáticamente
+        private System.Windows.Forms.Timer _timerEstado;
+
         public FrmAdminMDI()
         {
             InitializeComponent();
+            ConfigurarTimer();
+        }
+
+        /******** CONFIGURACIÓN DEL TIMER *********/
+        private void ConfigurarTimer()
+        {
+            _timerEstado = new System.Windows.Forms.Timer();
+            _timerEstado.Interval = 1000; // Revisar cada 1 segundo
+            _timerEstado.Tick += (s, e) => RefreshControles();
+            _timerEstado.Start();
         }
 
         /******** EVENTOS DEL FORMULARIO Y CONTROLES *********/
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             if (Program.appCine.conectado)
                 Program.appCine.DesconectarDB();
         }
@@ -21,18 +35,18 @@ namespace CineDAM.Formularios
         private void FrmMain_Load(object sender, EventArgs e)
         {
 #if !DEBUG
-                // Si no estamos en compilación DEBUG, ocultamos el menú de depuración
-                tsMenuItemDepura.Visible = false;
+            // Si no estamos en compilación DEBUG, ocultamos el menú de depuración
+            tsMenuItemDepura.Visible = false;
 #endif
             menuMain.MdiWindowListItem = ventanasToolStripMenuItem;
-            SeleccionarEmisor();
+
+            // Forzar tamaño de iconos del menú superior
+            menuMain.ImageScalingSize = new Size(32, 32);
+
             RefreshControles();
         }
 
-        private void tsBtnConfig_Click(object sender, EventArgs e)
-        {
-            AbrirFormularioHijo<FrmConfig>();
-        }
+        // --- Eventos del Menú Superior "Archivo" y "Ayuda" ---
 
         private void tsBtnSalir_Click(object sender, EventArgs e)
         {
@@ -42,56 +56,128 @@ namespace CineDAM.Formularios
 
         private void tsMenuItemDepura_Click(object sender, EventArgs e)
         {
-#if DEBUG
-            //AbrirFormularioHijo<FrmDepuracion>();
-#endif
-
+            AbrirFormularioHijo<FrmDebug>();
         }
 
-        private void tsBtnEmisores_Click(object sender, EventArgs e)
+        // --- Eventos de la Nueva Barra Inferior (ToolStrip) ---
+        // Estos son los que te daban error por faltar
+
+        private void tsPelicula_Click(object sender, EventArgs e)
         {
-            //AbrirFormularioHijo<FrmBrowEmisores>();
+            AbrirFormularioHijo<FrmBrowPeliculas>();
         }
 
-
-        private void tsItemMenuSeleccionarEmisor_Click(object sender, EventArgs e)
+        private void tsSala_Click(object sender, EventArgs e)
         {
-            CerrarFormulariosHijos();
-            SeleccionarEmisor();
-            RefreshControles();
+            AbrirFormularioHijo<FrmBrowSalas>();
         }
 
+        private void tsSesion_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo<FrmBrowSesiones>();
+        }
+
+        private void tsVenta_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo<FrmBrowVentas>();
+        }
+
+        private void tsTaquilla_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo<FrmTaquilla>();
+        }
+
+        private void tsConfiguracion_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo<FrmConfig>();
+        }
+
+        private void tsCerrarSesion_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("¿Seguro que deseas cerrar la aplicación?", "Cerrar Sesión", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                this.Close();
+            }
+        }
+
+        // --- Eventos del Menú "Gestión" (Redirigen a los botones de abajo para no repetir código) ---
+
+        private void películasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tsPelicula_Click(sender, e);
+        }
+
+        private void salasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tsSala_Click(sender, e);
+        }
+
+        private void sesionesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tsSesion_Click(sender, e);
+        }
+
+        private void ventasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tsVenta_Click(sender, e);
+        }
+
+        private void conexiónABBDDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tsConfiguracion_Click(sender, e);
+        }
+
+        /*************** MÉTODOS DE REFRESCO DE INTERFAZ *******************/
+
+        private void RefreshControles()
+        {
+            RefreshStatusBar();
+            RefreshMenuState();
+        }
+
+        private void RefreshStatusBar()
+        {
+            // Actualizamos la barra de estado según la conexión
+            if (Program.appCine.conectado)
+            {
+                tsLbEstado.Text = "CONECTADO A LA BASE DE DATOS";
+                tsLbEstado.ForeColor = Color.DarkGreen;
+            }
+            else
+            {
+                tsLbEstado.Text = "NO CONECTADO - Revise la configuración";
+                tsLbEstado.ForeColor = Color.Red;
+            }
+        }
+
+        private void RefreshMenuState()
+        {
+            bool hayConexion = Program.appCine.conectado;
+
+            // 1. Menús superiores
+            gestiónToolStripMenuItem.Enabled = hayConexion;
+            ventanasToolStripMenuItem.Enabled = hayConexion;
+
+            // 2. Barra de herramientas inferior (Botones grandes)
+            tsPelicula.Enabled = hayConexion;
+            tsSala.Enabled = hayConexion;
+            tsSesion.Enabled = hayConexion;
+            tsVenta.Enabled = hayConexion;
+            tsTaquilla.Enabled = hayConexion;
+
+            // La configuración y cerrar sesión siempre activos
+            tsConfiguracion.Enabled = true;
+            tsCerrarSesion.Enabled = true;
+        }
 
         /*************** MÉTODOS PRIVADOS *******************/
-
-        private void SeleccionarEmisor()
-        {
-            /*if ((Program.appCine.estadoApp == EstadoApp.ConectadoSinEmisor) ||
-                 (Program.appCine.estadoApp == EstadoApp.Conectado))
-            {
-                using (var frm = new FrmSeleccionarEmisor())
-                {
-                    var resultado = frm.ShowDialog();
-
-                    Program.appCine.estadoApp =
-                        (Program.appCine.emisor == null) ? EstadoApp.ConectadoSinEmisor : EstadoApp.Conectado;
-
-                }
-            }*/
-        }
 
         private void CerrarFormulariosHijos()
         {
             foreach (Form frm in this.MdiChildren)
-                //  if (frm is not FrmDepuracion)
                 frm.Close();
         }
 
-
-        /// <summary>
-        /// Abre un formulario hijo MDI del tipo indicado. 
-        /// Si ya existe, lo activa y lo restaura si estaba minimizado.
-        /// </summary>
         private void AbrirFormularioHijo<T>() where T : Form, new()
         {
             // Buscar si ya existe un formulario hijo de ese tipo
@@ -99,7 +185,6 @@ namespace CineDAM.Formularios
             {
                 if (frm is T)
                 {
-                    // Si estaba minimizado, lo restauramos
                     if (frm.WindowState == FormWindowState.Minimized)
                         frm.WindowState = FormWindowState.Normal;
 
@@ -108,75 +193,13 @@ namespace CineDAM.Formularios
                 }
             }
 
-            // No estaba abierto: creamos una nueva instancia
             T nuevoFrm = new T();
             nuevoFrm.MdiParent = this;
             nuevoFrm.WindowState = FormWindowState.Maximized;
             nuevoFrm.Show();
         }
 
-
-        private void RefreshToolBar()
-        {
-            /*if (Program.appCine.estadoApp != EstadoApp.Conectado)
-            {
-                foreach (ToolStripItem item in tsToolMain.Items)
-                {
-                    if (item is ToolStripButton)
-                    {
-                        switch (item.Name)
-                        {
-                            case "tsBtnConfig":
-                                item.Enabled = true;
-                                break;
-                            case "tsBtnSalir":
-                                item.Enabled = true;
-                                break;
-                            case "tsBtnEmisores":
-                                //item.Enabled = (Program.appCine.estadoApp == EstadoApp.ConectadoSinEmisor) ? true : false;
-                                break;
-                            default:
-                                item.Enabled = false;
-                                break;
-
-                        }
-                    }
-                }
-            }*/
-        }
-
-        private void RefreshStatusBar()
-        {
-            /*if (Program.appCine.emisor == null)
-                tsLbEmisor.Text = "Sin emisor seleccionado";
-            else
-                tsLbEmisor.Text = $"{Program.appCine.emisor.nombre} {Program.appCine.emisor.apellidos};  NIF: {Program.appDAM.emisor.nifcif}";
-
-            switch (Program.appCine.estadoApp)
-            {
-                case EstadoApp.Conectado:
-                    tsLbEstado.Text = "Conectado a la base de datos";
-                    break;
-                case EstadoApp.SinConexion:
-                    tsLbEstado.Text = "No se ha establecido la conexión a la base de datos.";
-                    break;
-                case EstadoApp.ConectadoSinEmisor:
-                    tsLbEstado.Text = "Conectado a la base de datos, pero no se ha seleccionado un emisor.";
-                    break;
-                case EstadoApp.Error:
-                    if (Program.appCine.ultimoError != "")
-                        tsLbEstado.Text = "Se ha producido un error, revisa el log para más detalles.";
-                    else
-                        tsLbEstado.Text = "Se ha producido un error";
-                    break;
-            }*/
-        }
-
-        private void RefreshControles()
-        {
-            RefreshToolBar();
-            RefreshStatusBar();
-        }
+        /******** EVENTOS DE VENTANAS (MDI) *********/
 
         private void cascadaToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -196,54 +219,6 @@ namespace CineDAM.Formularios
         private void cerrarTodasLasVentanasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CerrarFormulariosHijos();
-        }
-
-        private void tsBtnClientes_Click(object sender, EventArgs e)
-        {
-            //AbrirFormularioHijo<FrmBrowClientes>();
-        }
-
-        private void conceptosDeFacturaciónToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //AbrirFormularioHijo<FrmBrowConceptos>();
-        }
-
-        private void tiposDeIVAToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //AbrirFormularioHijo<FrmBrowTiposIVA>();
-        }
-
-        private void productosYServiciosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //AbrirFormularioHijo<FrmBrowProductos>();
-        }
-
-        private void tsBtnVentas_Click(object sender, EventArgs e)
-        {
-            /*if(!Program.appCine.HayClientes())
-                MessageBox.Show("No hay clientes registrados. \n Debe registrarse al menos un cliente antes\n" + "de crear facturas emitidas", "aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            else
-                AbrirFormularioHijo<FrmBrowFacemi>();*/
-        }
-
-        private void conexiónABBDDToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AbrirFormularioHijo<FrmConfig>();
-        }
-
-        private void películasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AbrirFormularioHijo<FrmBrowPeliculas>();
-        }
-
-        private void salasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AbrirFormularioHijo<FrmBrowSalas>();
-        }
-
-        private void sesionesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AbrirFormularioHijo<FrmBrowSesiones>();
         }
     }
 }

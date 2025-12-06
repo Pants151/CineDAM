@@ -14,7 +14,6 @@ namespace CineDAM.Formularios
 {
     public partial class FrmSala : Form
     {
-
         private BindingSource _bs;
         private Tabla _tabla;
         public bool edicion;
@@ -24,22 +23,22 @@ namespace CineDAM.Formularios
             InitializeComponent();
             _bs = bs;
             _tabla = tabla;
-
         }
 
         private void FrmSala_Load(object sender, EventArgs e)
         {
-            // 1. Limpiamos bindings previos para evitar duplicados si se reabre
+            // 1. Limpiamos bindings previos
             txtNombre.DataBindings.Clear();
-            txtColumnas.DataBindings.Clear();
-            txtFilas.DataBindings.Clear();
+            numFilas.DataBindings.Clear();
+            numColumnas.DataBindings.Clear();
 
             // 2. Añadimos los nuevos bindings.
-            // El tercer parámetro debe COINCIDIR EXACTAMENTE con el nombre de la columna en tu SQL de FrmBrowPeliculas.
+            txtNombre.DataBindings.Add("Text", _bs, "nombre", true);
 
-            txtNombre.DataBindings.Add("Text", _bs, "nombre");
-            txtFilas.DataBindings.Add("Text", _bs, "filas");
-            txtColumnas.DataBindings.Add("Text", _bs, "columnas");
+            // NumericUpDown se enlaza a "Value"
+            // El último parámetro '1' es el valor por defecto si es null o nueva sala
+            numFilas.DataBindings.Add("Value", _bs, "filas", true, DataSourceUpdateMode.OnPropertyChanged, 1);
+            numColumnas.DataBindings.Add("Value", _bs, "columnas", true, DataSourceUpdateMode.OnPropertyChanged, 1);
         }
 
         private void btn_aceptar_Click(object sender, EventArgs e)
@@ -48,7 +47,22 @@ namespace CineDAM.Formularios
             {
                 return;
             }
+
+            // --- CORRECCIÓN: Forzar guardado de valores numéricos ---
+            // Si el usuario no toca los números, el Binding no se entera.
+            // Aquí los asignamos manualmente para asegurar que no se envíen NULLs.
+            if (_bs.Current is DataRowView row)
+            {
+                row["filas"] = (int)numFilas.Value;
+                row["columnas"] = (int)numColumnas.Value;
+            }
+            // -------------------------------------------------------
+
+
             _bs.EndEdit();
+            // Asegura que los valores numéricos se envíen al BindingSource
+            this.ValidateChildren();
+
             _tabla.GuardarCambios();
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -62,59 +76,22 @@ namespace CineDAM.Formularios
 
         private bool ValidarDatos()
         {
-            /*
-            if (string.IsNullOrWhiteSpace(txt_nifcif.Text))
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
             {
-                MessageBox.Show("El campo NIF/CIF no puede estar vacío.");
-                txt_nifcif.Focus();
+                MessageBox.Show("El nombre de la sala es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(txt_razonsocial.Text))
+            // Aunque el control NumericUpDown ya impide escribir letras o bajar de 1,
+            // esta validación extra protege contra errores lógicos.
+            if (numFilas.Value < 1 || numColumnas.Value < 1)
             {
-                MessageBox.Show("El campo \"Nombre Comercial\" no puede estar vacío.");
-                txt_razonsocial.Focus();
+                MessageBox.Show("La sala debe tener al menos 1 fila y 1 columna.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
-
-            //Validacion 2: Si el email no está vacio, que sea un email valido
-            string email = txt_email.Text.Trim();
-            if (!string.IsNullOrWhiteSpace(email) &&
-                !System.Text.RegularExpressions.Regex.IsMatch(email,
-                    @"^[a-zA-Z0-9._%-+]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
-            {
-                MessageBox.Show("El email introducido no es válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txt_email.Focus();
-                return false;
-            }
-
-            //Validacion 3: NIF/CIF duplicado
-            if (NifDuplicado(txt_nifcif.Text.Trim()))
-            {
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("El NIF/CIF introducido ya existe en otro emisor. Por favor, introduce uno diferente.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txt_nifcif.Focus();
-                return false;
-            }*/
 
             return true;
         }
-        /*private bool NifDuplicado(string nifcif)
-        {
-            using MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM EMISORES WHERE NIFCIF=@NIFCIF", Program.appDAM.LaConexion);
-            cmd.Parameters.AddWithValue("@NIFCIF", nifcif);
-            if (edicion && _bs.Current is DataRowView row)
-            {
-                int id = (int)row["id"];
-                cmd.CommandText += " AND id<>@ID";
-                cmd.Parameters.AddWithValue("@ID", id);
-            }
-
-            int count = Convert.ToInt32(cmd.ExecuteScalar());
-            return (count > 0);
-        }*/
     }
 }

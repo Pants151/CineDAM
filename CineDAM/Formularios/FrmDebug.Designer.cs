@@ -40,9 +40,9 @@
             panel1.Controls.Add(chkRefrescar);
             panel1.Controls.Add(btnRefrescar);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 403);
+            panel1.Location = new Point(0, 409);
             panel1.Name = "panel1";
-            panel1.Size = new Size(800, 47);
+            panel1.Size = new Size(800, 41);
             panel1.TabIndex = 0;
             // 
             // btnRefrescar
@@ -74,7 +74,7 @@
             txtDebug.Name = "txtDebug";
             txtDebug.ReadOnly = true;
             txtDebug.ScrollBars = ScrollBars.Vertical;
-            txtDebug.Size = new Size(800, 403);
+            txtDebug.Size = new Size(800, 409);
             txtDebug.TabIndex = 1;
             // 
             // FrmDebug

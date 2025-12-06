@@ -77,12 +77,12 @@
             // btnNew
             // 
             btnNew.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
             btnNew.ImageTransparentColor = Color.Magenta;
             btnNew.Name = "btnNew";
             btnNew.Size = new Size(23, 22);
-            btnNew.Text = "Nuevo";
-            btnNew.Click += btnNew_Click;
+            btnNew.Text = "toolStripButton1";
+            btnNew.ToolTipText = "Nuevo";
+            btnNew.Click += btnNew_Click_1;
             // 
             // btnEdit
             // 
@@ -92,7 +92,8 @@
             btnEdit.Margin = new Padding(0, 1, 10, 2);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(23, 22);
-            btnEdit.Text = "Editar";
+            btnEdit.Text = "toolStripButton2";
+            btnEdit.ToolTipText = "Editar";
             btnEdit.Click += btnEdit_Click;
             // 
             // toolStripSeparator1
@@ -108,7 +109,8 @@
             btnDelete.Margin = new Padding(10, 1, 10, 2);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(23, 22);
-            btnDelete.Text = "Borrar";
+            btnDelete.Text = "toolStripButton3";
+            btnDelete.ToolTipText = "Borrar";
             btnDelete.Click += btnDelete_Click;
             // 
             // toolStripSeparator2
@@ -124,7 +126,8 @@
             btnFirst.Margin = new Padding(10, 1, 0, 2);
             btnFirst.Name = "btnFirst";
             btnFirst.Size = new Size(23, 22);
-            btnFirst.Text = "Primero";
+            btnFirst.Text = "toolStripButton4";
+            btnFirst.ToolTipText = "Primero";
             btnFirst.Click += btnFirst_Click;
             // 
             // btnPrev
@@ -134,7 +137,8 @@
             btnPrev.ImageTransparentColor = Color.Magenta;
             btnPrev.Name = "btnPrev";
             btnPrev.Size = new Size(23, 22);
-            btnPrev.Text = "Anterior";
+            btnPrev.Text = "toolStripButton5";
+            btnPrev.ToolTipText = "Anterior";
             btnPrev.Click += btnPrev_Click;
             // 
             // btnNext
@@ -238,7 +242,7 @@
             Controls.Add(pnStatus);
             Controls.Add(pnTools);
             Name = "FrmBrowPeliculas";
-            Text = "FrmBrowPelículas";
+            Text = "FrmBrowPeliculas";
             FormClosing += FrmBrowEmisores_FormClosing;
             Load += FrmBrowPeliculas_Load;
             Shown += FrmBrowEmisores_Shown;

@@ -137,25 +137,23 @@ namespace CineDAM.Formularios
         }
         private void btnNew_Click(object sender, EventArgs e)
         {
-            // 1. Creamos el formulario de sesión (sin pasarle el binding source complejo)
-            // Nota: Necesitarás crear un constructor vacío en FrmSesion (ver Paso 2)
-            using (FrmSesion frm = new FrmSesion()) 
+            // ... validaciones previas ...
+
+            _bs.AddNew();
+            using (FrmSesion frm = new FrmSesion(_bs, _tabla))
             {
-                // 2. Lo mostramos. Si el usuario guarda correctamente, devolverá OK.
+                frm.edicion = true;
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    // 3. Recargamos la tabla para que aparezca la nueva sesión
-                    // (Simplemente volvemos a llamar a InicializarDatos con la misma SQL del Load)
-                    string sql = "SELECT s.id_sesion, s.id_pelicula, s.id_sala, " +
-                                 "p.titulo AS Pelicula, sa.nombre AS Sala, s.hora_inicio, s.precio " +
-                                 "FROM Sesion s " +
-                                 "JOIN Pelicula p ON s.id_pelicula = p.id_pelicula " +
-                                 "JOIN Sala sa ON s.id_sala = sa.id_sala " +
-                                 "ORDER BY s.hora_inicio DESC";
+                    // CAMBIO: En lugar de GuardarCambios(), RECARGAMOS todo
+                    // _tabla.GuardarCambios(); <--- ESTO ES LO QUE DABA ERROR, BÓRRALO
 
-                    _tabla.InicializarDatos(sql);
-                    _bs.DataSource = _tabla.LaTabla; // Re-vinculamos por si acaso
-                    ActualizarEstado();
+                    // Llamamos al método de carga para refrescar la lista y traer los nuevos datos con sus JOINs
+                    FrmBrowPeliculas_Load(sender, e);
+                }
+                else
+                {
+                    _bs.CancelEdit();
                 }
             }
         }
@@ -168,18 +166,6 @@ namespace CineDAM.Formularios
 
         private void btnLast_Click(object sender, EventArgs e) => _bs.MoveLast();
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            /*if (_bs.Current is DataRowView row)
-            {
-                FrmEmisor frm = new FrmEmisor(_bs, _tabla);
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    _tabla.Refrescar();
-                    ActualizarEstado();
-                }
-            }*/
-        }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
@@ -241,15 +227,13 @@ namespace CineDAM.Formularios
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            // Pasamos _bs y _tabla al formulario hijo para que pueda editar
             using (FrmSesion frm = new FrmSesion(_bs, _tabla))
             {
                 frm.edicion = true;
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    // No hace falta Refrescar() si usamos BindingSource correctamente,
-                    // pero sí actualizar el contador
-                    ActualizarEstado();
+                    // CAMBIO: Igual que arriba, recargamos
+                    FrmBrowPeliculas_Load(sender, e);
                 }
             }
         }

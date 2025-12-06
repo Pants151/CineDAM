@@ -225,6 +225,7 @@ namespace CineDAM.Formularios
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error al vender: " + ex.Message);
+                    Program.appCine.RegistrarLog("Error Venta Taquilla", ex.StackTrace);
                 }
             }
         }

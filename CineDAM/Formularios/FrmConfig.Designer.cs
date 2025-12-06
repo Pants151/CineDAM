@@ -57,6 +57,7 @@
             // 
             // pnData
             // 
+            pnData.BackColor = Color.LightGray;
             pnData.Controls.Add(label5);
             pnData.Controls.Add(label4);
             pnData.Controls.Add(label3);
@@ -74,6 +75,7 @@
             // 
             // label5
             // 
+            label5.ForeColor = SystemColors.ActiveCaptionText;
             label5.Location = new Point(16, 153);
             label5.Name = "label5";
             label5.Size = new Size(100, 23);
@@ -83,6 +85,7 @@
             // 
             // label4
             // 
+            label4.ForeColor = SystemColors.ActiveCaptionText;
             label4.Location = new Point(16, 118);
             label4.Name = "label4";
             label4.Size = new Size(100, 23);
@@ -92,6 +95,7 @@
             // 
             // label3
             // 
+            label3.ForeColor = SystemColors.ActiveCaptionText;
             label3.Location = new Point(16, 83);
             label3.Name = "label3";
             label3.Size = new Size(100, 23);
@@ -139,6 +143,7 @@
             // 
             // label2
             // 
+            label2.ForeColor = SystemColors.ActiveCaptionText;
             label2.Location = new Point(16, 48);
             label2.Name = "label2";
             label2.Size = new Size(100, 23);
@@ -148,6 +153,8 @@
             // 
             // label1
             // 
+            label1.BackColor = Color.Transparent;
+            label1.ForeColor = SystemColors.ActiveCaptionText;
             label1.Location = new Point(16, 13);
             label1.Name = "label1";
             label1.Size = new Size(100, 23);
@@ -159,6 +166,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 14F);
+            label6.ForeColor = SystemColors.ControlLightLight;
             label6.Location = new Point(22, 35);
             label6.Name = "label6";
             label6.Size = new Size(300, 25);
@@ -177,6 +185,7 @@
             // 
             // statusStrip1
             // 
+            statusStrip1.BackColor = Color.Black;
             statusStrip1.Items.AddRange(new ToolStripItem[] { tsStatusLabel, tsProgressBarConexion });
             statusStrip1.Location = new Point(0, 332);
             statusStrip1.Name = "statusStrip1";
@@ -186,6 +195,7 @@
             // 
             // tsStatusLabel
             // 
+            tsStatusLabel.ForeColor = SystemColors.ControlLightLight;
             tsStatusLabel.Name = "tsStatusLabel";
             tsStatusLabel.Size = new Size(85, 17);
             tsStatusLabel.Text = "No conectado.";
@@ -199,6 +209,7 @@
             // 
             // toolStrip1
             // 
+            toolStrip1.BackColor = Color.Transparent;
             toolStrip1.Items.AddRange(new ToolStripItem[] { tsBtnCargar, tsBtnGuardar, toolStripSeparator1, tsLbRutaConfig });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
@@ -243,6 +254,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.IndianRed;
             ClientSize = new Size(562, 354);
             Controls.Add(toolStrip1);
             Controls.Add(statusStrip1);

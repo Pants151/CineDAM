@@ -91,20 +91,11 @@ namespace CineDAM.Formularios
             dgTabla.Columns["filas"].HeaderText = "Filas";
             dgTabla.Columns["columnas"].HeaderText = "Columnas";
 
-            // Estilo básico
+            // 3. Estilo general (opcional, para que se vea igual que el de Películas)
             dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.LightCyan;
-
-            // Colorear filas alternas
-            dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(255, 240, 255, 255);
-
-            // Estilo para cabeceras (Color, fuente y altura)
-            DataGridViewCellStyle estiloCabecera = new DataGridViewCellStyle
-            {
-                BackColor = Color.LightBlue,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Alignment = DataGridViewContentAlignment.MiddleCenter,
-                WrapMode = DataGridViewTriState.True
-            };
+            dgTabla.EnableHeadersVisualStyles = false; // Necesario para personalizar el color de cabecera
+            dgTabla.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
+            dgTabla.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
 
 
         }

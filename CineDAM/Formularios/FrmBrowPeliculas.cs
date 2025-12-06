@@ -89,24 +89,39 @@ namespace CineDAM.Formularios
             // Tu SQL es: SELECT id_pelicula AS ID, titulo AS Titulo, ...
 
             dgTabla.Columns["id_pelicula"].Visible = false; // Ocultamos el ID
-            dgTabla.Columns["titulo"].Width = 250;
+
+            // Ocultamos la columna de texto original de la URL
+            if (dgTabla.Columns.Contains("poster_url"))
+                dgTabla.Columns["poster_url"].Visible = false;
+
+            // Añadimos una columna de IMAGEN si no existe
+            if (!dgTabla.Columns.Contains("imgPoster"))
+            {
+                DataGridViewImageColumn imgCol = new DataGridViewImageColumn();
+                imgCol.Name = "imgPoster";
+                imgCol.HeaderText = "Póster";
+                imgCol.ImageLayout = DataGridViewImageCellLayout.Zoom; // Para que se ajuste bien
+                imgCol.Width = 60;
+                dgTabla.Columns.Add(imgCol);
+                // La movemos al principio para que quede chulo
+                dgTabla.Columns["imgPoster"].DisplayIndex = 0;
+            }
+
+            dgTabla.Columns["titulo"].Width = 200;
+
+            
             dgTabla.Columns["duracion_min"].Width = 100;
             dgTabla.Columns["clasificacion"].Width = 100;
 
-            // Estilo básico
+
+            // Hacer las filas más altas para que quepa la imagen
+            dgTabla.RowTemplate.Height = 80;
+
+            // 3. Estilo general (opcional, para que se vea igual que el de Películas)
             dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.LightCyan;
-
-            // Colorear filas alternas
-            dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(255, 240, 255, 255);
-
-            // Estilo para cabeceras (Color, fuente y altura)
-            DataGridViewCellStyle estiloCabecera = new DataGridViewCellStyle
-            {
-                BackColor = Color.LightBlue,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Alignment = DataGridViewContentAlignment.MiddleCenter,
-                WrapMode = DataGridViewTriState.True
-            };
+            dgTabla.EnableHeadersVisualStyles = false; // Necesario para personalizar el color de cabecera
+            dgTabla.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
+            dgTabla.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
 
 
         }
@@ -152,19 +167,6 @@ namespace CineDAM.Formularios
 
 
         private void btnLast_Click(object sender, EventArgs e) => _bs.MoveLast();
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            /*if (_bs.Current is DataRowView row)
-            {
-                FrmEmisor frm = new FrmEmisor(_bs, _tabla);
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    _tabla.Refrescar();
-                    ActualizarEstado();
-                }
-            }*/
-        }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
@@ -236,12 +238,28 @@ namespace CineDAM.Formularios
         // Formatear la celda de provincia para mostrar el nombre en lugar del ID
         private void dgTabla_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (dgTabla.Columns[e.ColumnIndex].Name == "idprovincia" && e.Value != null)
+            // Si estamos en la columna de imagen...
+            if (dgTabla.Columns[e.ColumnIndex].Name == "imgPoster")
             {
-                if (e.Value is int idProvincia)
+                // Obtenemos el nombre del archivo de la fila actual (columna oculta "poster_url")
+                var row = dgTabla.Rows[e.RowIndex];
+                string nombreArchivo = row.Cells["poster_url"].Value?.ToString();
+
+                if (!string.IsNullOrEmpty(nombreArchivo))
                 {
-                    e.Value = ObtenerNombreProvincia(idProvincia);
-                    e.FormattingApplied = true;
+                    string rutaCompleta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Imagenes", nombreArchivo);
+
+                    if (File.Exists(rutaCompleta))
+                    {
+                        // Cargar imagen (usando Image.FromFile o FromStream)
+                        // Usamos una caché simple o carga directa (ojo con el rendimiento si son muchas)
+                        e.Value = Image.FromFile(rutaCompleta);
+                    }
+                    else
+                    {
+                        // Si no encuentra el archivo, podrías poner una imagen "X" o null
+                        e.Value = null;
+                    }
                 }
             }
         }
@@ -326,6 +344,37 @@ namespace CineDAM.Formularios
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 Export_A_XML(sfd.FileName);
+            }
+        }
+
+        private void btnNew_Click_1(object sender, EventArgs e)
+        {
+            // Verifica que la conexión con los datos esté establecida
+            if (_bs?.DataSource == null || _tabla?.LaTabla == null)
+            {
+                MessageBox.Show("No se ha conectado correctamente con la tabla de Películas.", "Error de Datos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Añade un nuevo registro al BindingSource
+            _bs.AddNew();
+
+            // Abre el formulario de edición de película pasando el BindingSource y la Tabla
+            using (FrmPelicula frm = new FrmPelicula(_bs, _tabla))
+            {
+                frm.edicion = true; // Marca que se está editando (o creando)
+
+                // Si el usuario acepta, guarda los cambios en la base de datos
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    _tabla.GuardarCambios();
+                    ActualizarEstado();
+                }
+                else
+                {
+                    // Si cancela, deshace la creación del nuevo registro
+                    _bs.CancelEdit();
+                }
             }
         }
     }
