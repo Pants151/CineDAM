@@ -195,13 +195,21 @@ namespace CineDAM.Formularios
                 {
                     try
                     {
-                        // 4. Eliminamos la fila del BindingSource
+                        // 1. Obtener el ID de la sesión que vamos a borrar
+                        int idSesion = (int)row["id_sesion"];
+
+                        // 2. Ejecutar el DELETE manual en la base de datos
+                        string sqlDelete = $"DELETE FROM Sesion WHERE id_sesion = {idSesion}";
+                        using (var cmd = new MySql.Data.MySqlClient.MySqlCommand(sqlDelete, Program.appCine.LaConexion))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // 3. Quitarlo de la lista visual (BindingSource) para que desaparezca
                         _bs.RemoveCurrent();
 
-                        // 5. Guardamos los cambios en la BBDD
-                        _tabla.GuardarCambios();
+                        // ¡IMPORTANTE! NO llames a _tabla.GuardarCambios() aquí.
 
-                        // 6. Actualizamos la barra de estado
                         ActualizarEstado();
                     }
                     catch (Exception ex)

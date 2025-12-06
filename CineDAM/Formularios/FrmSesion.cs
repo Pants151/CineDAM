@@ -58,26 +58,71 @@ namespace CineDAM.Formularios
                 return;
             }
 
-            // 2. Recoger valores de los controles
             int idPeli = (int)cmbPelicula.SelectedValue;
             int idSala = (int)cmbSala.SelectedValue;
             DateTime hora = dtpHora.Value;
-            // Ojo con el precio, asegúrate de que sea un número válido.
-            // Si usas TextBox: double.Parse(txtPrecio.Text)
-            // Si usas NumericUpDown: nudPrecio.Value
-            string precioStr = txtPrecio.Text.Replace(",", "."); // Pequeño truco para decimales en SQL
+            string precioStr = txtPrecio.Text.Replace(",", ".");
 
-            // 3. Preparar la consulta SQL
-            string sql = $"INSERT INTO Sesion (id_pelicula, id_sala, hora_inicio, precio) " +
-                         $"VALUES ({idPeli}, {idSala}, '{hora:yyyy-MM-dd HH:mm:ss}', {precioStr})";
+            string sql = "";
+            int idSesion = -1; // guardamos aquí el id cuando estemos en modo edición
+
+            // ¿CÓMO SABEMOS SI ES EDICIÓN?
+            // Si _bs NO es null, significa que venimos del botón "Editar" (pasamos el BindingSource en el constructor).
+            // Si _bs ES null, venimos del botón "Nuevo" (constructor vacío).
+
+            if (_bs == null)
+            {
+                // MODO INSERTAR (Tu código actual)
+                sql = $"INSERT INTO Sesion (id_pelicula, id_sala, hora_inicio, precio) " +
+                      $"VALUES ({idPeli}, {idSala}, '{hora:yyyy-MM-dd HH:mm:ss}', {precioStr})";
+            }
+            else
+            {
+                // MODO ACTUALIZAR (Nuevo)
+                // Necesitamos el ID de la sesión que estamos editando. 
+                // Lo sacamos del BindingSource que nos pasaron.
+                DataRowView filaActual = (DataRowView)_bs.Current;
+                idSesion = (int)filaActual["id_sesion"];
+
+                sql = $"UPDATE Sesion SET " +
+                      $"id_pelicula = {idPeli}, " +
+                      $"id_sala = {idSala}, " +
+                      $"hora_inicio = '{hora:yyyy-MM-dd HH:mm:ss}', " +
+                      $"precio = {precioStr} " +
+                      $"WHERE id_sesion = {idSesion}";
+            }
 
             // 4. Ejecutarla usando nuestra conexión global
             try
             {
+                // Aseguramos que los cambios del binding se finalicen
+                _bs?.EndEdit();
+
                 // Creamos un comando MySQL
                 using (var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, Program.appCine.LaConexion))
                 {
-                    cmd.ExecuteNonQuery(); // Ejecuta el INSERT
+                    cmd.ExecuteNonQuery(); // Ejecuta el INSERT/UPDATE
+                }
+
+                // Si hemos editado (tenemos BindingSource), refrescamos la tabla y reposicionamos
+                if (_bs != null && idSesion > 0)
+                {
+                    _tabla?.Refrescar();
+
+                    if (_tabla?.LaTabla != null)
+                    {
+                        int idx = -1;
+                        for (int i = 0; i < _tabla.LaTabla.Rows.Count; i++)
+                        {
+                            if (Convert.ToInt32(_tabla.LaTabla.Rows[i]["id_sesion"]) == idSesion)
+                            {
+                                idx = i;
+                                break;
+                            }
+                        }
+                        if (idx >= 0) _bs.Position = idx;
+                        else _bs.ResetBindings(false); // fallback si no encuentra la fila
+                    }
                 }
 
                 // Si llegamos aquí, todo ha ido bien

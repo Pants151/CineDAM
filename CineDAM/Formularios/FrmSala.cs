@@ -27,7 +27,7 @@ namespace CineDAM.Formularios
 
         }
 
-        private void FrmPelicula_Load(object sender, EventArgs e)
+        private void FrmSala_Load(object sender, EventArgs e)
         {
             // 1. Limpiamos bindings previos para evitar duplicados si se reabre
             txtNombre.DataBindings.Clear();
