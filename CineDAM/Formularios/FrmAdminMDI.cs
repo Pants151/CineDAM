@@ -235,5 +235,15 @@ namespace CineDAM.Formularios
         {
             AbrirFormularioHijo<FrmBrowPeliculas>();
         }
+
+        private void salasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo<FrmBrowSalas>();
+        }
+
+        private void sesionesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo<FrmBrowSesiones>();
+        }
     }
 }

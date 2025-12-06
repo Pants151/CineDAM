@@ -11,12 +11,12 @@ using System.Windows.Forms;
 
 namespace CineDAM.Formularios
 {
-    public partial class FrmBrowPeliculas : Form
+    public partial class FrmBrowSesiones : Form
     {
         private Tabla _tabla; // Tabla a gestionar
         private BindingSource _bs; // Para comunicación con los controles visuales
         private Dictionary<int, string> _provincias; // Lista de provincias
-        public FrmBrowPeliculas()
+        public FrmBrowSesiones()
         {
             InitializeComponent();
             _tabla = new Tabla(Program.appCine.LaConexion);
@@ -25,7 +25,12 @@ namespace CineDAM.Formularios
 
         private void FrmBrowPeliculas_Load(object sender, EventArgs e)
         {
-            string sql = "SELECT id_pelicula, titulo, duracion_min, clasificacion, poster_url FROM Pelicula";
+            string sql = "SELECT s.id_sesion, s.id_pelicula, s.id_sala, " + 
+             "p.titulo AS Pelicula, sa.nombre AS Sala, s.hora_inicio, s.precio " +
+             "FROM Sesion s " +
+             "JOIN Pelicula p ON s.id_pelicula = p.id_pelicula " +
+             "JOIN Sala sa ON s.id_sala = sa.id_sala " +
+             "ORDER BY s.hora_inicio DESC";
 
             if (_tabla.InicializarDatos(sql))
             {
@@ -86,27 +91,36 @@ namespace CineDAM.Formularios
         //Personaliza las columnas del DataGridView
         private void PersonalizarDataGrid()
         {
-            // Tu SQL es: SELECT id_pelicula AS ID, titulo AS Titulo, ...
+            // 1. Ocultar la columna de ID (no le interesa al usuario)
+            dgTabla.Columns["id_sesion"].Visible = false;
 
-            dgTabla.Columns["id_pelicula"].Visible = false; // Ocultamos el ID
-            dgTabla.Columns["titulo"].Width = 250;
-            dgTabla.Columns["duracion_min"].Width = 100;
-            dgTabla.Columns["clasificacion"].Width = 100;
+            //Ocultar columnas de FK
+            if (dgTabla.Columns.Contains("id_pelicula")) dgTabla.Columns["id_pelicula"].Visible = false;
+            if (dgTabla.Columns.Contains("id_sala")) dgTabla.Columns["id_sala"].Visible = false;
 
-            // Estilo básico
+            // 2. Configurar cabeceras y anchos
+            dgTabla.Columns["Pelicula"].HeaderText = "Película";
+            dgTabla.Columns["Pelicula"].Width = 200; // Más espacio para el título
+
+            dgTabla.Columns["Sala"].HeaderText = "Sala";
+            dgTabla.Columns["Sala"].Width = 80;
+
+            dgTabla.Columns["hora_inicio"].HeaderText = "Fecha y Hora";
+            dgTabla.Columns["hora_inicio"].Width = 140;
+            // IMPORTANTE: Formato personalizado para que se vea "06/12/2025 22:00"
+            dgTabla.Columns["hora_inicio"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+
+            dgTabla.Columns["precio"].HeaderText = "Precio";
+            dgTabla.Columns["precio"].Width = 80;
+            // Formato moneda (añade el símbolo € automáticamente)
+            dgTabla.Columns["precio"].DefaultCellStyle.Format = "C2";
+            dgTabla.Columns["precio"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            // 3. Estilo general (opcional, para que se vea igual que el de Películas)
             dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.LightCyan;
-
-            // Colorear filas alternas
-            dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(255, 240, 255, 255);
-
-            // Estilo para cabeceras (Color, fuente y altura)
-            DataGridViewCellStyle estiloCabecera = new DataGridViewCellStyle
-            {
-                BackColor = Color.LightBlue,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Alignment = DataGridViewContentAlignment.MiddleCenter,
-                WrapMode = DataGridViewTriState.True
-            };
+            dgTabla.EnableHeadersVisualStyles = false; // Necesario para personalizar el color de cabecera
+            dgTabla.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
+            dgTabla.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
 
 
         }
@@ -123,24 +137,25 @@ namespace CineDAM.Formularios
         }
         private void btnNew_Click(object sender, EventArgs e)
         {
-            if (_bs?.DataSource == null || _tabla?.LaTabla == null)
+            // 1. Creamos el formulario de sesión (sin pasarle el binding source complejo)
+            // Nota: Necesitarás crear un constructor vacío en FrmSesion (ver Paso 2)
+            using (FrmSesion frm = new FrmSesion()) 
             {
-                MessageBox.Show("No se ha conectado correctamente con la tabla de Películas.", "Error de Datos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            _bs.AddNew();
-            using (FrmPelicula frm = new FrmPelicula(_bs, _tabla))
-            {
-                frm.edicion = true;
+                // 2. Lo mostramos. Si el usuario guarda correctamente, devolverá OK.
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    _tabla.GuardarCambios();
+                    // 3. Recargamos la tabla para que aparezca la nueva sesión
+                    // (Simplemente volvemos a llamar a InicializarDatos con la misma SQL del Load)
+                    string sql = "SELECT s.id_sesion, s.id_pelicula, s.id_sala, " +
+                                 "p.titulo AS Pelicula, sa.nombre AS Sala, s.hora_inicio, s.precio " +
+                                 "FROM Sesion s " +
+                                 "JOIN Pelicula p ON s.id_pelicula = p.id_pelicula " +
+                                 "JOIN Sala sa ON s.id_sala = sa.id_sala " +
+                                 "ORDER BY s.hora_inicio DESC";
+
+                    _tabla.InicializarDatos(sql);
+                    _bs.DataSource = _tabla.LaTabla; // Re-vinculamos por si acaso
                     ActualizarEstado();
-                }
-                else
-                {
-                    _bs.CancelEdit();
                 }
             }
         }
@@ -171,11 +186,9 @@ namespace CineDAM.Formularios
             // 1. Verificamos que haya una fila seleccionada
             if (_bs.Current is DataRowView row)
             {
-                // 2. Obtenemos el título para el mensaje (opcional, pero queda bien)
-                string titulo = row["titulo"].ToString();
 
                 // 3. Preguntamos confirmación al usuario
-                if (MessageBox.Show($"¿Está seguro de que desea eliminar la película '{titulo}'?",
+                if (MessageBox.Show($"¿Está seguro de que desea eliminar la sesión?",
                                     "Confirmar eliminación",
                                     MessageBoxButtons.YesNo,
                                     MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -221,7 +234,7 @@ namespace CineDAM.Formularios
         private void btnEdit_Click(object sender, EventArgs e)
         {
             // Pasamos _bs y _tabla al formulario hijo para que pueda editar
-            using (FrmPelicula frm = new FrmPelicula(_bs, _tabla))
+            using (FrmSesion frm = new FrmSesion(_bs, _tabla))
             {
                 frm.edicion = true;
                 if (frm.ShowDialog() == DialogResult.OK)

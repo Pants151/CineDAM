@@ -1,6 +1,6 @@
 ﻿namespace CineDAM.Formularios
 {
-    partial class FrmBrowPeliculas
+    partial class FrmBrowSalas
     {
         /// <summary>
         /// Required designer variable.
@@ -237,10 +237,10 @@
             Controls.Add(pnData);
             Controls.Add(pnStatus);
             Controls.Add(pnTools);
-            Name = "FrmBrowPeliculas";
-            Text = "FrmBrowPelículas";
+            Name = "FrmBrowSalas";
+            Text = "FrmBrowSalas";
             FormClosing += FrmBrowEmisores_FormClosing;
-            Load += FrmBrowPeliculas_Load;
+            Load += FrmBrowSalas_Load;
             Shown += FrmBrowEmisores_Shown;
             pnTools.ResumeLayout(false);
             pnTools.PerformLayout();

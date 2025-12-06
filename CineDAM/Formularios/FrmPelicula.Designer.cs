@@ -33,14 +33,14 @@
             btn_cancelar = new Button();
             btn_aceptar = new Button();
             panel2 = new Panel();
-            label1 = new Label();
-            label2 = new Label();
-            lblDuracion = new Label();
-            label4 = new Label();
-            txtTitulo = new TextBox();
-            txtDuracion = new TextBox();
-            txtClasificacion = new TextBox();
             txtPosterURL = new TextBox();
+            txtClasificacion = new TextBox();
+            txtDuracion = new TextBox();
+            txtTitulo = new TextBox();
+            label4 = new Label();
+            lblDuracion = new Label();
+            label2 = new Label();
+            label1 = new Label();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -97,32 +97,33 @@
             panel2.Size = new Size(660, 130);
             panel2.TabIndex = 1;
             // 
-            // label1
+            // txtPosterURL
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(24, 25);
-            label1.Name = "label1";
-            label1.Size = new Size(38, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Título";
+            txtPosterURL.Location = new Point(414, 79);
+            txtPosterURL.Name = "txtPosterURL";
+            txtPosterURL.Size = new Size(224, 23);
+            txtPosterURL.TabIndex = 7;
             // 
-            // label2
+            // txtClasificacion
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(359, 82);
-            label2.Name = "label2";
-            label2.Size = new Size(40, 15);
-            label2.TabIndex = 1;
-            label2.Text = "Póster";
+            txtClasificacion.Location = new Point(414, 22);
+            txtClasificacion.Name = "txtClasificacion";
+            txtClasificacion.Size = new Size(224, 23);
+            txtClasificacion.TabIndex = 6;
             // 
-            // lblDuracion
+            // txtDuracion
             // 
-            lblDuracion.AutoSize = true;
-            lblDuracion.Location = new Point(7, 82);
-            lblDuracion.Name = "lblDuracion";
-            lblDuracion.Size = new Size(55, 15);
-            lblDuracion.TabIndex = 2;
-            lblDuracion.Text = "Duración";
+            txtDuracion.Location = new Point(68, 79);
+            txtDuracion.Name = "txtDuracion";
+            txtDuracion.Size = new Size(243, 23);
+            txtDuracion.TabIndex = 5;
+            // 
+            // txtTitulo
+            // 
+            txtTitulo.Location = new Point(68, 22);
+            txtTitulo.Name = "txtTitulo";
+            txtTitulo.Size = new Size(243, 23);
+            txtTitulo.TabIndex = 4;
             // 
             // label4
             // 
@@ -133,33 +134,32 @@
             label4.TabIndex = 3;
             label4.Text = "Clasificación";
             // 
-            // txtTitulo
+            // lblDuracion
             // 
-            txtTitulo.Location = new Point(68, 22);
-            txtTitulo.Name = "txtTitulo";
-            txtTitulo.Size = new Size(243, 23);
-            txtTitulo.TabIndex = 4;
+            lblDuracion.AutoSize = true;
+            lblDuracion.Location = new Point(7, 82);
+            lblDuracion.Name = "lblDuracion";
+            lblDuracion.Size = new Size(55, 15);
+            lblDuracion.TabIndex = 2;
+            lblDuracion.Text = "Duración";
             // 
-            // txtDuracion
+            // label2
             // 
-            txtDuracion.Location = new Point(68, 79);
-            txtDuracion.Name = "txtDuracion";
-            txtDuracion.Size = new Size(243, 23);
-            txtDuracion.TabIndex = 5;
+            label2.AutoSize = true;
+            label2.Location = new Point(359, 82);
+            label2.Name = "label2";
+            label2.Size = new Size(40, 15);
+            label2.TabIndex = 1;
+            label2.Text = "Póster";
             // 
-            // txtClasificacion
+            // label1
             // 
-            txtClasificacion.Location = new Point(414, 22);
-            txtClasificacion.Name = "txtClasificacion";
-            txtClasificacion.Size = new Size(224, 23);
-            txtClasificacion.TabIndex = 6;
-            // 
-            // txtPosterURL
-            // 
-            txtPosterURL.Location = new Point(414, 79);
-            txtPosterURL.Name = "txtPosterURL";
-            txtPosterURL.Size = new Size(224, 23);
-            txtPosterURL.TabIndex = 7;
+            label1.AutoSize = true;
+            label1.Location = new Point(24, 25);
+            label1.Name = "label1";
+            label1.Size = new Size(38, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Título";
             // 
             // FrmPelicula
             // 
@@ -169,7 +169,7 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "FrmPelicula";
-            Text = "Insertar emisor";
+            Text = "Película";
             Load += FrmPelicula_Load;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);

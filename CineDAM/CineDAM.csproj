@@ -12,4 +12,19 @@
     <PackageReference Include="MySql.Data" Version="9.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Formularios\FrmBrowSesiones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Formularios\FrmBrowSalas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Formularios\FrmSesion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Formularios\FrmSala.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

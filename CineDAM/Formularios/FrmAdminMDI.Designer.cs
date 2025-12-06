@@ -112,12 +112,14 @@
             salasToolStripMenuItem.Name = "salasToolStripMenuItem";
             salasToolStripMenuItem.Size = new Size(180, 22);
             salasToolStripMenuItem.Text = "Salas";
+            salasToolStripMenuItem.Click += salasToolStripMenuItem_Click;
             // 
             // sesionesToolStripMenuItem
             // 
             sesionesToolStripMenuItem.Name = "sesionesToolStripMenuItem";
             sesionesToolStripMenuItem.Size = new Size(180, 22);
             sesionesToolStripMenuItem.Text = "Sesiones";
+            sesionesToolStripMenuItem.Click += sesionesToolStripMenuItem_Click;
             // 
             // ventanasToolStripMenuItem
             // 
@@ -231,7 +233,7 @@
             tsLbEstado.Name = "tsLbEstado";
             tsLbEstado.Size = new Size(0, 29);
             // 
-            // CineDAM
+            // FrmAdminMDI
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -239,8 +241,8 @@
             Controls.Add(pnStatus);
             Controls.Add(pnMenu);
             IsMdiContainer = true;
-            Name = "CineDAM";
-            Text = "Factura DAM";
+            Name = "FrmAdminMDI";
+            Text = "CineDAM";
             WindowState = FormWindowState.Maximized;
             FormClosing += FrmMain_FormClosing;
             Load += FrmMain_Load;

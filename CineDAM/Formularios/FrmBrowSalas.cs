@@ -11,21 +11,21 @@ using System.Windows.Forms;
 
 namespace CineDAM.Formularios
 {
-    public partial class FrmBrowPeliculas : Form
+    public partial class FrmBrowSalas : Form
     {
         private Tabla _tabla; // Tabla a gestionar
         private BindingSource _bs; // Para comunicación con los controles visuales
         private Dictionary<int, string> _provincias; // Lista de provincias
-        public FrmBrowPeliculas()
+        public FrmBrowSalas()
         {
             InitializeComponent();
             _tabla = new Tabla(Program.appCine.LaConexion);
             _bs = new BindingSource();
         }
 
-        private void FrmBrowPeliculas_Load(object sender, EventArgs e)
+        private void FrmBrowSalas_Load(object sender, EventArgs e)
         {
-            string sql = "SELECT id_pelicula, titulo, duracion_min, clasificacion, poster_url FROM Pelicula";
+            string sql = "SELECT id_sala, nombre, filas, columnas FROM Sala";
 
             if (_tabla.InicializarDatos(sql))
             {
@@ -86,12 +86,10 @@ namespace CineDAM.Formularios
         //Personaliza las columnas del DataGridView
         private void PersonalizarDataGrid()
         {
-            // Tu SQL es: SELECT id_pelicula AS ID, titulo AS Titulo, ...
-
-            dgTabla.Columns["id_pelicula"].Visible = false; // Ocultamos el ID
-            dgTabla.Columns["titulo"].Width = 250;
-            dgTabla.Columns["duracion_min"].Width = 100;
-            dgTabla.Columns["clasificacion"].Width = 100;
+            dgTabla.Columns["id_sala"].Visible = false;
+            dgTabla.Columns["nombre"].HeaderText = "Nombre Sala";
+            dgTabla.Columns["filas"].HeaderText = "Filas";
+            dgTabla.Columns["columnas"].HeaderText = "Columnas";
 
             // Estilo básico
             dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.LightCyan;
@@ -125,12 +123,12 @@ namespace CineDAM.Formularios
         {
             if (_bs?.DataSource == null || _tabla?.LaTabla == null)
             {
-                MessageBox.Show("No se ha conectado correctamente con la tabla de Películas.", "Error de Datos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se ha conectado correctamente con la tabla de Salas.", "Error de Datos", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             _bs.AddNew();
-            using (FrmPelicula frm = new FrmPelicula(_bs, _tabla))
+            using (FrmSala frm = new FrmSala(_bs, _tabla))
             {
                 frm.edicion = true;
                 if (frm.ShowDialog() == DialogResult.OK)
@@ -172,10 +170,10 @@ namespace CineDAM.Formularios
             if (_bs.Current is DataRowView row)
             {
                 // 2. Obtenemos el título para el mensaje (opcional, pero queda bien)
-                string titulo = row["titulo"].ToString();
+                string titulo = row["nombre"].ToString();
 
                 // 3. Preguntamos confirmación al usuario
-                if (MessageBox.Show($"¿Está seguro de que desea eliminar la película '{titulo}'?",
+                if (MessageBox.Show($"¿Está seguro de que desea eliminar la sala '{titulo}'?",
                                     "Confirmar eliminación",
                                     MessageBoxButtons.YesNo,
                                     MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -199,20 +197,6 @@ namespace CineDAM.Formularios
             }
         }
 
-
-        private bool TieneFacturasEmitidas(int emisorId)
-        {
-            using var cmd = new MySql.Data.MySqlClient.MySqlCommand("SELECT COUNT(*) FROM FACTURAS WHERE EMISOR_ID = @EmisorId", Program.appCine.LaConexion);
-            cmd.Parameters.AddWithValue("@EmisorId", emisorId);
-            var count = Convert.ToInt32(cmd.ExecuteScalar());
-            return count > 0;
-        }
-
-        private bool TieneFacturasRecibidas(string aNifCif)
-        {
-            return false;
-        }
-
         private void dgTabla_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             btnEdit_Click(sender, e);
@@ -221,7 +205,7 @@ namespace CineDAM.Formularios
         private void btnEdit_Click(object sender, EventArgs e)
         {
             // Pasamos _bs y _tabla al formulario hijo para que pueda editar
-            using (FrmPelicula frm = new FrmPelicula(_bs, _tabla))
+            using (FrmSala frm = new FrmSala(_bs, _tabla))
             {
                 frm.edicion = true;
                 if (frm.ShowDialog() == DialogResult.OK)
@@ -294,7 +278,7 @@ namespace CineDAM.Formularios
             try
             {
                 DataTable dt = (DataTable)_bs.DataSource;
-                dt.TableName = "Pelicula";
+                dt.TableName = "Sala";
                 dt.WriteXml(rutaArchivo, XmlWriteMode.WriteSchema);
                 MessageBox.Show("Exportación a XML completada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }

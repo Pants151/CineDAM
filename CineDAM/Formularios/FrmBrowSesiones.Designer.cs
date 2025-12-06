@@ -1,6 +1,6 @@
 ﻿namespace CineDAM.Formularios
 {
-    partial class FrmBrowPeliculas
+    partial class FrmBrowSesiones
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmBrowPeliculas));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmBrowSesiones));
             pnTools = new Panel();
             tsHerramientas = new ToolStrip();
             btnNew = new ToolStripButton();
@@ -229,7 +229,7 @@
             dgTabla.CellFormatting += dgTabla_CellFormatting;
             dgTabla.CellMouseDoubleClick += dgTabla_CellMouseDoubleClick;
             // 
-            // FrmBrowPeliculas
+            // FrmBrowSesiones
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -237,8 +237,8 @@
             Controls.Add(pnData);
             Controls.Add(pnStatus);
             Controls.Add(pnTools);
-            Name = "FrmBrowPeliculas";
-            Text = "FrmBrowPelículas";
+            Name = "FrmBrowSesiones";
+            Text = "FrmBrowSesiones";
             FormClosing += FrmBrowEmisores_FormClosing;
             Load += FrmBrowPeliculas_Load;
             Shown += FrmBrowEmisores_Shown;
