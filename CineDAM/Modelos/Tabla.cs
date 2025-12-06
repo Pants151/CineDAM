@@ -43,6 +43,7 @@ namespace CineDAM.Modelos
             catch (Exception ex)
             {
                 Program.appCine.RegistrarLog("Cargando datos", ex.Message);
+                System.Windows.Forms.MessageBox.Show("Error SQL: " + ex.Message);
                 return false;
             }
         }

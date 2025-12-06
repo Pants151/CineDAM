@@ -26,8 +26,7 @@ namespace CineDAM
                 }
                 else if (appCine.estadoApp == CineDAM.Modelos.EstadoApp.TaquillaAbierta)
                 {
-                    //Application.Run(new FrmTaquilla()); // Aún no lo hemos creado
-                    MessageBox.Show("¡Login de Taquilla OK! (El formulario se creará en Fase 3)");
+                    Application.Run(new FrmTaquilla());
                 }
             }
             // Si el loginResult es "Cancel", la aplicación simplemente se cierra.
