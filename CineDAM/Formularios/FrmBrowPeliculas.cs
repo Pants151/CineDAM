@@ -25,7 +25,7 @@ namespace CineDAM.Formularios
 
         private void FrmBrowPeliculas_Load(object sender, EventArgs e)
         {
-            string sql = "SELECT id_pelicula AS ID, titulo AS Titulo, duracion_min AS 'Duración (min)', clasificacion AS 'Clasificación' FROM Pelicula";
+            string sql = "SELECT id_pelicula, titulo, duracion_min, clasificacion, poster_url FROM Pelicula";
 
             if (_tabla.InicializarDatos(sql))
             {
@@ -36,7 +36,7 @@ namespace CineDAM.Formularios
             }
             else
             {
-                MessageBox.Show("No se pudieron cargar los emisores.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se pudieron cargar las películas. Revisa el log de errores.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ActualizarEstado();
             }
         }
@@ -86,40 +86,15 @@ namespace CineDAM.Formularios
         //Personaliza las columnas del DataGridView
         private void PersonalizarDataGrid()
         {
-            // Ocultar columnas no necesarias
-            dgTabla.Columns["id"].Visible = false;
-            dgTabla.Columns["domicilio"].Visible = false;
-            dgTabla.Columns["telefono2"].Visible = false;
-            dgTabla.Columns["nextnumfac"].Visible = false;
-            dgTabla.Columns["prefixfac"].Visible = false;
-            dgTabla.Columns["descripcion"].Visible = false;
+            // Tu SQL es: SELECT id_pelicula AS ID, titulo AS Titulo, ...
 
-            // Cambiar los textos de las cabeceras
-            dgTabla.Columns["nifcif"].HeaderText = "NIF/CIF";
-            dgTabla.Columns["nombrecomercial"].HeaderText = "Razón Social";
-            dgTabla.Columns["nombre"].HeaderText = "Nombre";
-            dgTabla.Columns["apellidos"].HeaderText = "Apellidos";
-            dgTabla.Columns["domicilio"].HeaderText = "Domicilio";
-            dgTabla.Columns["codigopostal"].HeaderText = "Código Postal";
-            dgTabla.Columns["poblacion"].HeaderText = "Población";
-            dgTabla.Columns["idprovincia"].HeaderText = "Provincia";
-            dgTabla.Columns["telefono1"].HeaderText = "Teléfono 1";
-            dgTabla.Columns["telefono2"].HeaderText = "Teléfono 2";
-            dgTabla.Columns["email"].HeaderText = "Email";
-            dgTabla.Columns["nextnumfac"].HeaderText = "Siguiente Nº Factura";
-            dgTabla.Columns["prefixfac"].HeaderText = "Prefijo Factura";
-            dgTabla.Columns["descripcion"].HeaderText = "Descripción";
+            dgTabla.Columns["id_pelicula"].Visible = false; // Ocultamos el ID
+            dgTabla.Columns["titulo"].Width = 250;
+            dgTabla.Columns["duracion_min"].Width = 100;
+            dgTabla.Columns["clasificacion"].Width = 100;
 
-            // Ajuste manual de anchuras
-            dgTabla.Columns["nifcif"].Width = 100;
-            dgTabla.Columns["nombrecomercial"].Width = 200;
-            dgTabla.Columns["nombre"].Width = 120;
-            dgTabla.Columns["apellidos"].Width = 160;
-            dgTabla.Columns["codigopostal"].Width = 75;
-            dgTabla.Columns["poblacion"].Width = 150;
-            dgTabla.Columns["idprovincia"].Width = 150;
-            dgTabla.Columns["telefono1"].Width = 100;
-            dgTabla.Columns["email"].Width = 250;
+            // Estilo básico
+            dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.LightCyan;
 
             // Colorear filas alternas
             dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(255, 240, 255, 255);
@@ -146,11 +121,11 @@ namespace CineDAM.Formularios
         {
             tslbStatus.Text = $"Nº de registros: {_bs.Count}";
         }
-        private void btnLoad_Click(object sender, EventArgs e)
+        private void btnNew_Click(object sender, EventArgs e)
         {
             if (_bs?.DataSource == null || _tabla?.LaTabla == null)
             {
-                MessageBox.Show("No hay datos cargados. Imposible crear un nuevo emisor.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se ha conectado correctamente con la tabla de Películas.", "Error de Datos", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -268,15 +243,17 @@ namespace CineDAM.Formularios
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            /*if (_bs.Current is DataRowView row)
+            // Pasamos _bs y _tabla al formulario hijo para que pueda editar
+            using (FrmPelicula frm = new FrmPelicula(_bs, _tabla))
             {
-                FrmEmisor frm = new FrmEmisor(_bs, _tabla);
+                frm.edicion = true;
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    _tabla.Refrescar();
+                    // No hace falta Refrescar() si usamos BindingSource correctamente,
+                    // pero sí actualizar el contador
                     ActualizarEstado();
                 }
-            }*/
+            }
         }
 
         // Formatear la celda de provincia para mostrar el nombre en lugar del ID

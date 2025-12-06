@@ -1,6 +1,6 @@
 ﻿namespace CineDAM.Formularios
 {
-    partial class CineDAM
+    partial class FrmAdminMDI
     {
         /// <summary>
         ///  Required designer variable.

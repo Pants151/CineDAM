@@ -12,6 +12,7 @@ namespace CineDAM.Modelos
         SinConexion,
         Conectado, //Estado general
         AdminLogueado, //Logueado como admin
-        TaquillaAbierta //Logueado como vendedor
+        TaquillaAbierta, //Logueado como vendedor
+        Error
     }
 }

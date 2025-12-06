@@ -22,7 +22,7 @@ namespace CineDAM
                 // 3. Según el estado, abrimos un formulario u otro
                 if (appCine.estadoApp == CineDAM.Modelos.EstadoApp.AdminLogueado)
                 {
-                    Application.Run(new Formularios.CineDAM()); // Lanza el panel de Admin
+                    Application.Run(new Formularios.FrmAdminMDI()); // Lanza el panel de Admin
                 }
                 else if (appCine.estadoApp == CineDAM.Modelos.EstadoApp.TaquillaAbierta)
                 {

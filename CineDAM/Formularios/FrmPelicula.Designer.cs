@@ -170,7 +170,7 @@
             Controls.Add(panel1);
             Name = "FrmPelicula";
             Text = "Insertar emisor";
-            Load += FrmEmisor_Load;
+            Load += FrmPelicula_Load;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();

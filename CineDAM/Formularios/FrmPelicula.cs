@@ -27,14 +27,22 @@ namespace CineDAM.Formularios
 
         }
 
-        private void FrmEmisor_Load(object sender, EventArgs e)
+        private void FrmPelicula_Load(object sender, EventArgs e)
         {
-            /*if (_bs?.DataSource == null)
-            {
-                MessageBox.Show("No hay fuente de datos disponible. Abortando...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
-                return;
-            }*/
+            // 1. Limpiamos bindings previos para evitar duplicados si se reabre
+            txtTitulo.DataBindings.Clear();
+            txtDuracion.DataBindings.Clear();
+            txtClasificacion.DataBindings.Clear();
+            txtPosterURL.DataBindings.Clear();
+
+            // 2. Añadimos los nuevos bindings.
+            // El tercer parámetro debe COINCIDIR EXACTAMENTE con el nombre de la columna en tu SQL de FrmBrowPeliculas.
+            // Tu SQL: SELECT ... titulo AS Titulo, ...
+
+            txtTitulo.DataBindings.Add("Text", _bs, "titulo");
+            txtDuracion.DataBindings.Add("Text", _bs, "duracion_min");
+            txtClasificacion.DataBindings.Add("Text", _bs, "clasificacion");
+            txtPosterURL.DataBindings.Add("Text", _bs, "poster_url");
         }
 
         private void btn_aceptar_Click(object sender, EventArgs e)

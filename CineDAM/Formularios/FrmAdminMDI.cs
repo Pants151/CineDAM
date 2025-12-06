@@ -2,9 +2,9 @@ using CineDAM.Modelos;
 
 namespace CineDAM.Formularios
 {
-    public partial class CineDAM : Form
+    public partial class FrmAdminMDI : Form
     {
-        public CineDAM()
+        public FrmAdminMDI()
         {
             InitializeComponent();
         }

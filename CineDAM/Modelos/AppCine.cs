@@ -67,19 +67,19 @@ namespace CineDAM.Modelos {
             configConexion = CargarConfiguracionDB(aRutaConfig);
 
             // Intento la conexión a la base de datos
-            /*if (configConexion != null)
+            if (configConexion != null)
             {
-                if (ConectarDB()) {
-                    if (usuarioLogueado == null)
-                        estadoApp = EstadoApp.ConectadoSinEmisor;
-                    else
-                        estadoApp = EstadoApp.Conectado;
+                if (ConectarDB())
+                {
+                    // Como ya no usamos "usuarioLogueado" aquí (lo hacemos en el Login),
+                    // simplemente decimos que está conectado.
+                    estadoApp = EstadoApp.Conectado;
                 }
                 else
                     estadoApp = (ultimoError != "") ? EstadoApp.Error : EstadoApp.SinConexion;
             }
             else
-                estadoApp = (ultimoError != "") ? EstadoApp.Error : EstadoApp.SinConexion;*/
+                estadoApp = (ultimoError != "") ? EstadoApp.Error : EstadoApp.SinConexion;
 
         }
 

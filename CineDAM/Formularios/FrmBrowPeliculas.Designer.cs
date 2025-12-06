@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmBrowPeliculas));
             pnTools = new Panel();
             tsHerramientas = new ToolStrip();
-            btnLoad = new ToolStripButton();
+            btnNew = new ToolStripButton();
             btnEdit = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
             btnDelete = new ToolStripButton();
@@ -67,22 +67,22 @@
             // 
             // tsHerramientas
             // 
-            tsHerramientas.Items.AddRange(new ToolStripItem[] { btnLoad, btnEdit, toolStripSeparator1, btnDelete, toolStripSeparator2, btnFirst, btnPrev, btnNext, btnLast, toolStripSeparator3, tsBtnExportCSV, tsBtnExportXML });
+            tsHerramientas.Items.AddRange(new ToolStripItem[] { btnNew, btnEdit, toolStripSeparator1, btnDelete, toolStripSeparator2, btnFirst, btnPrev, btnNext, btnLast, toolStripSeparator3, tsBtnExportCSV, tsBtnExportXML });
             tsHerramientas.Location = new Point(0, 0);
             tsHerramientas.Name = "tsHerramientas";
             tsHerramientas.Size = new Size(800, 25);
             tsHerramientas.TabIndex = 0;
             tsHerramientas.Text = "toolStrip1";
             // 
-            // btnLoad
+            // btnNew
             // 
-            btnLoad.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            btnLoad.Image = (Image)resources.GetObject("btnLoad.Image");
-            btnLoad.ImageTransparentColor = Color.Magenta;
-            btnLoad.Name = "btnLoad";
-            btnLoad.Size = new Size(23, 22);
-            btnLoad.Text = "toolStripButton1";
-            btnLoad.Click += btnLoad_Click;
+            btnNew.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
+            btnNew.ImageTransparentColor = Color.Magenta;
+            btnNew.Name = "btnNew";
+            btnNew.Size = new Size(23, 22);
+            btnNew.Text = "Nuevo";
+            btnNew.Click += btnNew_Click;
             // 
             // btnEdit
             // 
@@ -92,7 +92,7 @@
             btnEdit.Margin = new Padding(0, 1, 10, 2);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(23, 22);
-            btnEdit.Text = "toolStripButton2";
+            btnEdit.Text = "Editar";
             btnEdit.Click += btnEdit_Click;
             // 
             // toolStripSeparator1
@@ -108,7 +108,7 @@
             btnDelete.Margin = new Padding(10, 1, 10, 2);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(23, 22);
-            btnDelete.Text = "toolStripButton3";
+            btnDelete.Text = "Borrar";
             btnDelete.Click += btnDelete_Click;
             // 
             // toolStripSeparator2
@@ -124,7 +124,7 @@
             btnFirst.Margin = new Padding(10, 1, 0, 2);
             btnFirst.Name = "btnFirst";
             btnFirst.Size = new Size(23, 22);
-            btnFirst.Text = "toolStripButton4";
+            btnFirst.Text = "Primero";
             btnFirst.Click += btnFirst_Click;
             // 
             // btnPrev
@@ -134,7 +134,7 @@
             btnPrev.ImageTransparentColor = Color.Magenta;
             btnPrev.Name = "btnPrev";
             btnPrev.Size = new Size(23, 22);
-            btnPrev.Text = "toolStripButton5";
+            btnPrev.Text = "Anterior";
             btnPrev.Click += btnPrev_Click;
             // 
             // btnNext
@@ -144,7 +144,7 @@
             btnNext.ImageTransparentColor = Color.Magenta;
             btnNext.Name = "btnNext";
             btnNext.Size = new Size(23, 22);
-            btnNext.Text = "toolStripButton6";
+            btnNext.Text = "Siguiente";
             btnNext.Click += btnNext_Click;
             // 
             // btnLast
@@ -154,7 +154,7 @@
             btnLast.ImageTransparentColor = Color.Magenta;
             btnLast.Name = "btnLast";
             btnLast.Size = new Size(23, 22);
-            btnLast.Text = "toolStripButton7";
+            btnLast.Text = "Último";
             btnLast.Click += btnLast_Click;
             // 
             // toolStripSeparator3
@@ -229,7 +229,7 @@
             dgTabla.CellFormatting += dgTabla_CellFormatting;
             dgTabla.CellMouseDoubleClick += dgTabla_CellMouseDoubleClick;
             // 
-            // FrmBrowEmisores
+            // FrmBrowPeliculas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -237,7 +237,7 @@
             Controls.Add(pnData);
             Controls.Add(pnStatus);
             Controls.Add(pnTools);
-            Name = "FrmBrowEmisores";
+            Name = "FrmBrowPeliculas";
             Text = "FrmBrowEmisores";
             FormClosing += FrmBrowEmisores_FormClosing;
             Load += FrmBrowPeliculas_Load;
@@ -266,7 +266,7 @@
         private Panel pnData;
         private DataGridView dgTabla;
         private ToolStrip tsHerramientas;
-        private ToolStripButton btnLoad;
+        private ToolStripButton btnNew;
         private ToolStripButton btnEdit;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton btnDelete;
