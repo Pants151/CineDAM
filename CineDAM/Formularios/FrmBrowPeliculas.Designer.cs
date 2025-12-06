@@ -240,7 +240,7 @@
             Name = "FrmBrowEmisores";
             Text = "FrmBrowEmisores";
             FormClosing += FrmBrowEmisores_FormClosing;
-            Load += FrmBrowEmisores_Load;
+            Load += FrmBrowPeliculas_Load;
             Shown += FrmBrowEmisores_Shown;
             pnTools.ResumeLayout(false);
             pnTools.PerformLayout();

@@ -103,19 +103,20 @@
             // películasToolStripMenuItem
             // 
             películasToolStripMenuItem.Name = "películasToolStripMenuItem";
-            películasToolStripMenuItem.Size = new Size(120, 22);
+            películasToolStripMenuItem.Size = new Size(180, 22);
             películasToolStripMenuItem.Text = "Películas";
+            películasToolStripMenuItem.Click += películasToolStripMenuItem_Click;
             // 
             // salasToolStripMenuItem
             // 
             salasToolStripMenuItem.Name = "salasToolStripMenuItem";
-            salasToolStripMenuItem.Size = new Size(120, 22);
+            salasToolStripMenuItem.Size = new Size(180, 22);
             salasToolStripMenuItem.Text = "Salas";
             // 
             // sesionesToolStripMenuItem
             // 
             sesionesToolStripMenuItem.Name = "sesionesToolStripMenuItem";
-            sesionesToolStripMenuItem.Size = new Size(120, 22);
+            sesionesToolStripMenuItem.Size = new Size(180, 22);
             sesionesToolStripMenuItem.Text = "Sesiones";
             // 
             // ventanasToolStripMenuItem
@@ -163,7 +164,7 @@
             // conexiónABBDDToolStripMenuItem
             // 
             conexiónABBDDToolStripMenuItem.Name = "conexiónABBDDToolStripMenuItem";
-            conexiónABBDDToolStripMenuItem.Size = new Size(180, 22);
+            conexiónABBDDToolStripMenuItem.Size = new Size(166, 22);
             conexiónABBDDToolStripMenuItem.Text = "Conexión a BBDD";
             conexiónABBDDToolStripMenuItem.Click += conexiónABBDDToolStripMenuItem_Click;
             // 
@@ -206,14 +207,14 @@
             tsLbEtiquetaEmisor.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             tsLbEtiquetaEmisor.Margin = new Padding(0, 4, 6, 2);
             tsLbEtiquetaEmisor.Name = "tsLbEtiquetaEmisor";
-            tsLbEtiquetaEmisor.Size = new Size(47, 25);
+            tsLbEtiquetaEmisor.Size = new Size(47, 29);
             tsLbEtiquetaEmisor.Text = "Emisor:";
             // 
             // tsLbEmisor
             // 
             tsLbEmisor.AutoSize = false;
             tsLbEmisor.Name = "tsLbEmisor";
-            tsLbEmisor.Size = new Size(250, 26);
+            tsLbEmisor.Size = new Size(250, 30);
             tsLbEmisor.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // tsLbEtiquetaInfo
@@ -221,14 +222,14 @@
             tsLbEtiquetaInfo.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             tsLbEtiquetaInfo.Margin = new Padding(0, 4, 6, 2);
             tsLbEtiquetaInfo.Name = "tsLbEtiquetaInfo";
-            tsLbEtiquetaInfo.Size = new Size(46, 25);
+            tsLbEtiquetaInfo.Size = new Size(46, 29);
             tsLbEtiquetaInfo.Text = "Estado:";
             // 
             // tsLbEstado
             // 
             tsLbEstado.Margin = new Padding(10, 4, 0, 2);
             tsLbEstado.Name = "tsLbEstado";
-            tsLbEstado.Size = new Size(0, 25);
+            tsLbEstado.Size = new Size(0, 29);
             // 
             // CineDAM
             // 

@@ -11,7 +11,7 @@ namespace CineDAM.Modelos
         Iniciando,
         SinConexion,
         Conectado, //Estado general
-        AdminLoguedo, //Logueado como admin
+        AdminLogueado, //Logueado como admin
         TaquillaAbierta //Logueado como vendedor
     }
 }

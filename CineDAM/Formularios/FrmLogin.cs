@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CineDAM.Modelos;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,13 +22,13 @@ namespace CineDAM.Formularios
         {
             if (txtUsuario.Text == "admin" && txtPassword.Text == "admin")
             {
-                Program.appCine.estadoApp = CineDAM.Modelos.EstadoApp.AdminLogueado;
+                Program.appCine.estadoApp = EstadoApp.AdminLogueado;
                 this.DialogResult = DialogResult.OK; // Indica que el login fue exitoso
                 this.Close();
             }
             else if (txtUsuario.Text == "taquilla" && txtPassword.Text == "taquilla")
             {
-                Program.appCine.estadoApp = CineDAM.Modelos.EstadoApp.TaquillaAbierta;
+                Program.appCine.estadoApp = EstadoApp.TaquillaAbierta;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

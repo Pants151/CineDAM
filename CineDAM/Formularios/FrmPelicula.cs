@@ -29,42 +29,12 @@ namespace CineDAM.Formularios
 
         private void FrmEmisor_Load(object sender, EventArgs e)
         {
-            if (_bs?.DataSource == null)
+            /*if (_bs?.DataSource == null)
             {
                 MessageBox.Show("No hay fuente de datos disponible. Abortando...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
                 return;
-            }
-
-            txt_nifcif.DataBindings.Add("Text", _bs, "nifcif");
-            txt_razonsocial.DataBindings.Add("Text", _bs, "nombrecomercial");
-            txt_nombre.DataBindings.Add("Text", _bs, "nombre");
-            txt_apellidos.DataBindings.Add("Text", _bs, "apellidos");
-            txt_domicilio.DataBindings.Add("Text", _bs, "domicilio");
-            txt_codigopostal.DataBindings.Add("Text", _bs, "codigopostal");
-            txt_poblacion.DataBindings.Add("Text", _bs, "poblacion");
-            cbox_provincia.DataBindings.Add("SelectedValue", _bs, "idprovincia");
-            txt_telefono1.DataBindings.Add("Text", _bs, "telefono1");
-            txt_telefono2.DataBindings.Add("Text", _bs, "telefono2");
-            txt_email.DataBindings.Add("Text", _bs, "email");
-            txt_siguientenum.DataBindings.Add("Text", _bs, "nextnumfac");
-            txt_prefijo.DataBindings.Add("Text", _bs, "prefixfac");
-            txt_descripcion.DataBindings.Add("Text", _bs, "descripcion");
-
-
-            Tabla tablaProvincias = new Tabla(Program.appDAM.LaConexion);
-            if (tablaProvincias.InicializarDatos("SELECT * FROM provincias"))
-            {
-                cbox_provincia.DataSource = tablaProvincias.LaTabla;
-                cbox_provincia.DisplayMember = "nombreprovincia";
-                cbox_provincia.ValueMember = "id";
-            }
-            else
-            {
-                MessageBox.Show("No se pudieron cargar las provincias.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-
+            }*/
         }
 
         private void btn_aceptar_Click(object sender, EventArgs e)
@@ -87,7 +57,7 @@ namespace CineDAM.Formularios
 
         private bool ValidarDatos()
         {
-            //Validacion 1: NIF/CIF y Nombre comercial no pueden estar vacios
+            /*
             if (string.IsNullOrWhiteSpace(txt_nifcif.Text))
             {
                 MessageBox.Show("El campo NIF/CIF no puede estar vacío.");
@@ -123,11 +93,11 @@ namespace CineDAM.Formularios
                 MessageBox.Show("El NIF/CIF introducido ya existe en otro emisor. Por favor, introduce uno diferente.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txt_nifcif.Focus();
                 return false;
-            }
+            }*/
 
             return true;
         }
-        private bool NifDuplicado(string nifcif)
+        /*private bool NifDuplicado(string nifcif)
         {
             using MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM EMISORES WHERE NIFCIF=@NIFCIF", Program.appDAM.LaConexion);
             cmd.Parameters.AddWithValue("@NIFCIF", nifcif);
@@ -140,6 +110,6 @@ namespace CineDAM.Formularios
 
             int count = Convert.ToInt32(cmd.ExecuteScalar());
             return (count > 0);
-        }
+        }*/
     }
 }

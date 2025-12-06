@@ -21,7 +21,6 @@ namespace CineDAM.Formularios
             InitializeComponent();
             _tabla = new Tabla(Program.appCine.LaConexion);
             _bs = new BindingSource();
-            CargarProvincias();
         }
 
         private void FrmBrowPeliculas_Load(object sender, EventArgs e)
@@ -248,8 +247,8 @@ namespace CineDAM.Formularios
             return false;
         }
 
-        // Cargar la lista de provincias desde la base de datos
-        private void CargarProvincias()
+        
+        /*private void CargarProvincias()
         {
             _provincias = new Dictionary<int, string>();
             using var cmd = new MySql.Data.MySqlClient.MySqlCommand("SELECT id, nombreprovincia FROM provincias", Program.appCine.LaConexion);
@@ -260,7 +259,7 @@ namespace CineDAM.Formularios
                 string nombre = reader.GetString(1);
                 _provincias[id] = nombre;
             }
-        }
+        }*/
 
         private void dgTabla_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
