@@ -9,11 +9,28 @@ namespace CineDAM
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            appCine = new AppCine();
-            Application.Run(new FrmConfig());
+            appCine = new AppCine(); // Inicia la App y carga la config
+
+            // 1. Mostramos el Login
+            FrmLogin frmLogin = new FrmLogin();
+            DialogResult loginResult = frmLogin.ShowDialog();
+
+            // 2. Si el login es exitoso, comprobamos el rol
+            if (loginResult == DialogResult.OK)
+            {
+                // 3. Según el estado, abrimos un formulario u otro
+                if (appCine.estadoApp == CineDAM.Modelos.EstadoApp.AdminLogueado)
+                {
+                    Application.Run(new Formularios.CineDAM()); // Lanza el panel de Admin
+                }
+                else if (appCine.estadoApp == CineDAM.Modelos.EstadoApp.TaquillaAbierta)
+                {
+                    //Application.Run(new FrmTaquilla()); // Aún no lo hemos creado
+                    MessageBox.Show("¡Login de Taquilla OK! (El formulario se creará en Fase 3)");
+                }
+            }
+            // Si el loginResult es "Cancel", la aplicación simplemente se cierra.
         }
     }
 }
