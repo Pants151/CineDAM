@@ -1,4 +1,5 @@
 ﻿using CineDAM.Modelos;
+using MySql.Data.MySqlClient;
 using System.Data;
 using System.Text;
 
@@ -14,9 +15,34 @@ namespace CineDAM.Formularios
             InitializeComponent();
             _tabla = new Tabla(Program.appCine.LaConexion);
             _bs = new BindingSource();
+
+            // Suscripción al evento global de cambios
+            AppCine.DatosActualizados += AppCine_DatosActualizados;
+        }
+
+        // --- MANEJO SEGURO DE EVENTOS DE OTRAS VENTANAS ---
+        private void AppCine_DatosActualizados(object sender, EventArgs e)
+        {
+            // Verificamos si la ventana existe antes de intentar actualizarla
+            if (this.IsHandleCreated && !this.IsDisposed)
+            {
+                this.Invoke((MethodInvoker)delegate { CargarDatos(); });
+            }
+        }
+
+        // --- DESUSCRIPCIÓN AL CERRAR (CRUCIAL PARA EVITAR ERRORES) ---
+        private void FrmBrowSalas_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            AppCine.DatosActualizados -= AppCine_DatosActualizados;
+            GuardarEstadoVentana();
         }
 
         private void FrmBrowSalas_Load(object sender, EventArgs e)
+        {
+            CargarDatos();
+        }
+
+        private void CargarDatos()
         {
             string sql = "SELECT id_sala, nombre, filas, columnas FROM Sala";
 
@@ -36,7 +62,7 @@ namespace CineDAM.Formularios
 
         private void PersonalizarDataGrid()
         {
-            // 1. Columnas
+            // 1. Configuración de Columnas
             dgTabla.Columns["id_sala"].Visible = false;
             dgTabla.Columns["nombre"].HeaderText = "NOMBRE SALA";
             dgTabla.Columns["filas"].HeaderText = "FILAS";
@@ -72,17 +98,17 @@ namespace CineDAM.Formularios
             tslbStatus.Text = $"Nº de registros: {_bs.Count}";
         }
 
+        // --- GESTIÓN DE EDICIÓN Y CREACIÓN ---
         private void btnNew_Click(object sender, EventArgs e)
         {
-            if (_bs?.DataSource == null) return;
             _bs.AddNew();
             using (FrmSala frm = new FrmSala(_bs, _tabla))
             {
                 frm.edicion = true;
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    _tabla.GuardarCambios();
-                    ActualizarEstado();
+                    // Al volver, recargamos (FrmSala hace el INSERT manual)
+                    CargarDatos();
                 }
                 else
                 {
@@ -99,7 +125,8 @@ namespace CineDAM.Formularios
                 frm.edicion = true;
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    ActualizarEstado();
+                    // Al volver, recargamos (FrmSala hace el UPDATE manual)
+                    CargarDatos();
                 }
             }
         }
@@ -109,6 +136,7 @@ namespace CineDAM.Formularios
             btnEdit_Click(sender, e);
         }
 
+        // --- BORRADO MANUAL (SQL) ---
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (_bs.Current is DataRowView row)
@@ -118,25 +146,37 @@ namespace CineDAM.Formularios
                 {
                     try
                     {
-                        _bs.RemoveCurrent();
-                        _tabla.GuardarCambios();
-                        ActualizarEstado();
+                        int id = Convert.ToInt32(row["id_sala"]);
+                        string sql = $"DELETE FROM Sala WHERE id_sala = {id}";
+
+                        using (var cmd = new MySqlCommand(sql, Program.appCine.LaConexion))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        AppCine.NotificarCambioDatos(); // Avisamos a otras ventanas
+                        Program.appCine.RegistrarLog("Baja Sala", $"Eliminada: {nombre}");
+
+                        // En este form, recargamos directamente ya que la notificación puede tardar ms
+                        CargarDatos();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error: " + ex.Message);
+                        if (ex.Message.Contains("foreign key"))
+                            MessageBox.Show("No se puede borrar: Esta sala tiene sesiones o ventas asociadas.");
+                        else
+                            MessageBox.Show("Error al eliminar: " + ex.Message);
                     }
                 }
             }
         }
 
-        // Navegación
+        // --- NAVEGACIÓN Y EXPORTACIÓN ---
         private void btnFirst_Click(object sender, EventArgs e) => _bs.MoveFirst();
         private void btnPrev_Click(object sender, EventArgs e) => _bs.MovePrevious();
         private void btnNext_Click(object sender, EventArgs e) => _bs.MoveNext();
         private void btnLast_Click(object sender, EventArgs e) => _bs.MoveLast();
 
-        // Exportación
         private void tsBtnExportCSV_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog() { Filter = "CSV|*.csv" };
@@ -173,10 +213,9 @@ namespace CineDAM.Formularios
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
         }
 
-        // Métodos de ventana (vacíos por ahora)
+        // Métodos de ventana vacíos
         public void GuardarEstadoVentana() { }
         public void RestaurarEstadoVentana() { }
-        private void FrmBrowEmisores_FormClosing(object sender, FormClosingEventArgs e) { GuardarEstadoVentana(); }
-        private void FrmBrowEmisores_Shown(object sender, EventArgs e) { RestaurarEstadoVentana(); }
+        private void FrmBrowSalas_Shown(object sender, EventArgs e) { RestaurarEstadoVentana(); }
     }
 }

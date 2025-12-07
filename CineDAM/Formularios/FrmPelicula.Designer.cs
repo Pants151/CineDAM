@@ -33,8 +33,8 @@
             label1 = new Label();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pbPoster).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDuracion).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pbPoster).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -77,7 +77,7 @@
             btn_aceptar.Name = "btn_aceptar";
             btn_aceptar.Size = new Size(100, 30);
             btn_aceptar.TabIndex = 0;
-            btn_aceptar.Text = "Aceptar";
+            btn_aceptar.Text = "ACEPTAR";
             btn_aceptar.UseVisualStyleBackColor = false;
             btn_aceptar.Click += btn_aceptar_Click;
             // 
@@ -155,11 +155,11 @@
             numDuracion.BackColor = Color.FromArgb(40, 40, 40);
             numDuracion.BorderStyle = BorderStyle.FixedSingle;
             numDuracion.ForeColor = Color.White;
-            numDuracion.Location = new Point(257, 172);
+            numDuracion.Location = new Point(98, 172);
             numDuracion.Maximum = new decimal(new int[] { 600, 0, 0, 0 });
             numDuracion.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numDuracion.Name = "numDuracion";
-            numDuracion.Size = new Size(54, 23);
+            numDuracion.Size = new Size(213, 23);
             numDuracion.TabIndex = 5;
             numDuracion.Value = new decimal(new int[] { 90, 0, 0, 0 });
             // 
@@ -169,7 +169,7 @@
             txtTitulo.BorderStyle = BorderStyle.FixedSingle;
             txtTitulo.ForeColor = Color.White;
             txtTitulo.Location = new Point(98, 22);
-            txtTitulo.MaxLength = 255;
+            txtTitulo.MaxLength = 100;
             txtTitulo.Name = "txtTitulo";
             txtTitulo.Size = new Size(213, 23);
             txtTitulo.TabIndex = 4;
@@ -188,11 +188,11 @@
             // 
             lblDuracion.AutoSize = true;
             lblDuracion.ForeColor = Color.LightGray;
-            lblDuracion.Location = new Point(115, 174);
+            lblDuracion.Location = new Point(37, 174);
             lblDuracion.Name = "lblDuracion";
-            lblDuracion.Size = new Size(126, 15);
+            lblDuracion.Size = new Size(55, 15);
             lblDuracion.TabIndex = 2;
-            lblDuracion.Text = "Duración (en minutos)";
+            lblDuracion.Text = "Duración";
             // 
             // label2
             // 
@@ -223,13 +223,13 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "FrmPelicula";
-            Text = "Película";
+            Text = "Editar Película";
             Load += FrmPelicula_Load;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pbPoster).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDuracion).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pbPoster).EndInit();
             ResumeLayout(false);
         }
 

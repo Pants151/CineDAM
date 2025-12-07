@@ -48,6 +48,7 @@
             toolStripSeparator2 = new ToolStripSeparator();
             tsConfiguracion = new ToolStripButton();
             tsSalir = new ToolStripButton();
+            toolStripMenuAcercaDe = new ToolStripMenuItem();
             pnMenu.SuspendLayout();
             menuMain.SuspendLayout();
             pnStatus.SuspendLayout();
@@ -212,7 +213,7 @@
             // 
             // helpToolStripMenuItem
             // 
-            helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { tsMenuItemDepura });
+            helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { tsMenuItemDepura, toolStripMenuAcercaDe });
             helpToolStripMenuItem.ForeColor = Color.White;
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             helpToolStripMenuItem.Size = new Size(56, 22);
@@ -223,7 +224,7 @@
             tsMenuItemDepura.BackColor = Color.FromArgb(40, 40, 40);
             tsMenuItemDepura.ForeColor = Color.White;
             tsMenuItemDepura.Name = "tsMenuItemDepura";
-            tsMenuItemDepura.Size = new Size(143, 22);
+            tsMenuItemDepura.Size = new Size(180, 22);
             tsMenuItemDepura.Text = "&Depuración";
             tsMenuItemDepura.Click += tsMenuItemDepura_Click;
             // 
@@ -391,6 +392,15 @@
             tsSalir.TextImageRelation = TextImageRelation.ImageAboveText;
             tsSalir.Click += tsCerrarSesion_Click;
             // 
+            // toolStripMenuAcercaDe
+            // 
+            toolStripMenuAcercaDe.BackColor = Color.FromArgb(40, 40, 40);
+            toolStripMenuAcercaDe.ForeColor = Color.White;
+            toolStripMenuAcercaDe.Name = "toolStripMenuAcercaDe";
+            toolStripMenuAcercaDe.Size = new Size(180, 22);
+            toolStripMenuAcercaDe.Text = "Acerca de...";
+            toolStripMenuAcercaDe.Click += toolStripMenuAcercaDe_Click;
+            // 
             // FrmAdminMDI
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -455,5 +465,6 @@
         private ToolStripButton tsSalir;
         private ToolStripButton tsVenta;
         private ToolStripButton tsConfiguracion;
+        private ToolStripMenuItem toolStripMenuAcercaDe;
     }
 }

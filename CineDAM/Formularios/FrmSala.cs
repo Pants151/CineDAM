@@ -1,4 +1,5 @@
 ﻿using CineDAM.Modelos;
+using MySql.Data.MySqlClient;
 using System.Data;
 
 namespace CineDAM.Formularios
@@ -31,17 +32,44 @@ namespace CineDAM.Formularios
         {
             if (!ValidarDatos()) return;
 
-            if (_bs.Current is DataRowView row)
+            string nombre = txtNombre.Text;
+            int filas = (int)numFilas.Value;
+            int columnas = (int)numColumnas.Value;
+
+            DataRowView row = (DataRowView)_bs.Current;
+            bool esNuevo = row.IsNew;
+
+            string sql = "";
+            if (esNuevo)
+                sql = "INSERT INTO Sala (nombre, filas, columnas) VALUES (@nom, @fil, @col)";
+            else
             {
-                row["filas"] = (int)numFilas.Value;
-                row["columnas"] = (int)numColumnas.Value;
+                int id = Convert.ToInt32(row["id_sala"]);
+                sql = "UPDATE Sala SET nombre=@nom, filas=@fil, columnas=@col WHERE id_sala=@id";
             }
 
-            _bs.EndEdit();
-            _tabla.GuardarCambios();
-            AppCine.NotificarCambioDatos();
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            try
+            {
+                using (var cmd = new MySqlCommand(sql, Program.appCine.LaConexion))
+                {
+                    cmd.Parameters.AddWithValue("@nom", nombre);
+                    cmd.Parameters.AddWithValue("@fil", filas);
+                    cmd.Parameters.AddWithValue("@col", columnas);
+                    if (!esNuevo) cmd.Parameters.AddWithValue("@id", row["id_sala"]);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                _bs.CancelEdit();
+                AppCine.NotificarCambioDatos();
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar sala: " + ex.Message);
+            }
         }
 
         private void btn_cancelar_Click(object sender, EventArgs e)

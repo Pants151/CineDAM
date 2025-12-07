@@ -188,5 +188,17 @@ namespace CineDAM.Formularios
         private void mosaicoHorizontalToolStripMenuItem_Click(object sender, EventArgs e) { this.LayoutMdi(MdiLayout.TileHorizontal); }
         private void mosaicoVerticalToolStripMenuItem_Click(object sender, EventArgs e) { this.LayoutMdi(MdiLayout.TileVertical); }
         private void cerrarTodasLasVentanasToolStripMenuItem_Click(object sender, EventArgs e) { CerrarFormulariosHijos(); }
+
+        private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmAcercaDe frm = new FrmAcercaDe();
+            frm.ShowDialog();
+        }
+
+        private void toolStripMenuAcercaDe_Click(object sender, EventArgs e)
+        {
+            FrmAcercaDe frm = new FrmAcercaDe();
+            frm.ShowDialog();
+        }
     }
 }

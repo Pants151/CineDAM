@@ -1,4 +1,5 @@
 ﻿using CineDAM.Modelos;
+using MySql.Data.MySqlClient;
 using System.Data;
 using System.Text;
 
@@ -14,12 +15,18 @@ namespace CineDAM.Formularios
             InitializeComponent();
             _tabla = new Tabla(Program.appCine.LaConexion);
             _bs = new BindingSource();
+            // Nos suscribimos a cambios globales
+            AppCine.DatosActualizados += AppCine_DatosActualizados;
         }
 
-        private void FrmBrowPeliculas_Load(object sender, EventArgs e)
+        private void AppCine_DatosActualizados(object sender, EventArgs e)
+        {
+            this.Invoke((MethodInvoker)delegate { CargarDatos(); });
+        }
+
+        private void CargarDatos()
         {
             string sql = "SELECT id_pelicula, titulo, duracion_min, clasificacion, poster_url FROM Pelicula";
-
             if (_tabla.InicializarDatos(sql))
             {
                 _bs.DataSource = _tabla.LaTabla;
@@ -27,12 +34,11 @@ namespace CineDAM.Formularios
                 PersonalizarDataGrid();
                 ActualizarEstado();
             }
-            else
-            {
-                Program.appCine.RegistrarLog("Error Carga Películas", "Falló InicializarDatos. Ver logs anteriores.");
-                MessageBox.Show("No se pudieron cargar las películas.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                ActualizarEstado();
-            }
+        }
+
+        private void FrmBrowPeliculas_Load(object sender, EventArgs e)
+        {
+            CargarDatos();
         }
 
         // --- MÉTODOS DE VENTANA (Guardar/Restaurar) ---
@@ -123,13 +129,19 @@ namespace CineDAM.Formularios
         // --- BOTONES ---
         private void btnNew_Click(object sender, EventArgs e)
         {
-            if (_bs?.DataSource == null) return;
-            _bs.AddNew();
+            _bs.AddNew(); // Solo para preparar el BindingSource
             using (FrmPelicula frm = new FrmPelicula(_bs, _tabla))
             {
                 frm.edicion = true;
-                if (frm.ShowDialog() == DialogResult.OK) { _tabla.GuardarCambios(); ActualizarEstado(); }
-                else { _bs.CancelEdit(); }
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    // Al volver, solo recargamos. FrmPelicula ya hizo el INSERT.
+                    CargarDatos();
+                }
+                else
+                {
+                    _bs.CancelEdit();
+                }
             }
         }
 
@@ -139,7 +151,11 @@ namespace CineDAM.Formularios
             using (FrmPelicula frm = new FrmPelicula(_bs, _tabla))
             {
                 frm.edicion = true;
-                if (frm.ShowDialog() == DialogResult.OK) { ActualizarEstado(); }
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    // Al volver, solo recargamos. FrmPelicula ya hizo el UPDATE.
+                    CargarDatos();
+                }
             }
         }
 
@@ -154,16 +170,25 @@ namespace CineDAM.Formularios
                 {
                     try
                     {
-                        _bs.RemoveCurrent();
-                        _tabla.GuardarCambios();
-                        ActualizarEstado();
-                        Program.appCine.RegistrarLog("Baja Película", "Película eliminada correctamente.");
+                        int id = Convert.ToInt32(row["id_pelicula"]);
+
+                        // SQL DIRECTO: Infalible
+                        string sql = $"DELETE FROM Pelicula WHERE id_pelicula = {id}";
+                        using (var cmd = new MySqlCommand(sql, Program.appCine.LaConexion))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Avisamos y recargamos
+                        AppCine.NotificarCambioDatos();
+                        Program.appCine.RegistrarLog("Baja Película", $"Eliminada: {titulo}");
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error: " + ex.Message);
-                        // LOG DE ERROR CONCRETO
-                        Program.appCine.RegistrarLog("Error Baja Película", $"No se pudo borrar. Excepción: {ex.StackTrace}");
+                        if (ex.Message.Contains("foreign key"))
+                            MessageBox.Show("No se puede borrar: Esta película tiene sesiones o ventas asociadas.");
+                        else
+                            MessageBox.Show("Error al borrar: " + ex.Message);
                     }
                 }
             }

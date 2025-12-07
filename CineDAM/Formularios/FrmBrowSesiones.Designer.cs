@@ -15,9 +15,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmBrowSesiones));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             pnTools = new Panel();
             tsHerramientas = new ToolStrip();
             btnNew = new ToolStripButton();
@@ -52,12 +52,12 @@
             pnTools.Dock = DockStyle.Top;
             pnTools.Location = new Point(0, 0);
             pnTools.Name = "pnTools";
-            pnTools.Size = new Size(800, 35);
+            pnTools.Size = new Size(900, 35);
             pnTools.TabIndex = 0;
             // 
             // tsHerramientas
             // 
-            tsHerramientas.BackColor = Color.Gray;
+            tsHerramientas.BackColor = Color.FromArgb(45, 45, 48);
             tsHerramientas.GripStyle = ToolStripGripStyle.Hidden;
             tsHerramientas.ImageScalingSize = new Size(24, 24);
             tsHerramientas.Items.AddRange(new ToolStripItem[] { btnNew, btnEdit, toolStripSeparator1, btnDelete, toolStripSeparator2, btnFirst, btnPrev, btnNext, btnLast, toolStripSeparator3, tsBtnExportCSV, tsBtnExportXML });
@@ -65,7 +65,7 @@
             tsHerramientas.Name = "tsHerramientas";
             tsHerramientas.Padding = new Padding(10, 2, 1, 0);
             tsHerramientas.RenderMode = ToolStripRenderMode.System;
-            tsHerramientas.Size = new Size(800, 33);
+            tsHerramientas.Size = new Size(900, 33);
             tsHerramientas.TabIndex = 0;
             tsHerramientas.Text = "toolStrip1";
             // 
@@ -182,9 +182,9 @@
             // 
             pnStatus.Controls.Add(statusStrip1);
             pnStatus.Dock = DockStyle.Bottom;
-            pnStatus.Location = new Point(0, 424);
+            pnStatus.Location = new Point(0, 524);
             pnStatus.Name = "pnStatus";
-            pnStatus.Size = new Size(800, 26);
+            pnStatus.Size = new Size(900, 26);
             pnStatus.TabIndex = 1;
             // 
             // statusStrip1
@@ -193,7 +193,7 @@
             statusStrip1.Items.AddRange(new ToolStripItem[] { tslbStatus });
             statusStrip1.Location = new Point(0, 4);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(800, 22);
+            statusStrip1.Size = new Size(900, 22);
             statusStrip1.TabIndex = 0;
             statusStrip1.Text = "statusBar";
             // 
@@ -211,7 +211,7 @@
             pnData.Location = new Point(0, 35);
             pnData.Name = "pnData";
             pnData.Padding = new Padding(10);
-            pnData.Size = new Size(800, 389);
+            pnData.Size = new Size(900, 489);
             pnData.TabIndex = 2;
             // 
             // dgTabla
@@ -257,7 +257,7 @@
             dgTabla.RowHeadersVisible = false;
             dgTabla.RowTemplate.Height = 35;
             dgTabla.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgTabla.Size = new Size(780, 369);
+            dgTabla.Size = new Size(880, 469);
             dgTabla.TabIndex = 0;
             dgTabla.CellMouseDoubleClick += dgTabla_CellMouseDoubleClick;
             // 
@@ -266,15 +266,15 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(15, 15, 15);
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(900, 550);
             Controls.Add(pnData);
             Controls.Add(pnStatus);
             Controls.Add(pnTools);
             Name = "FrmBrowSesiones";
             Text = "Gestión de Sesiones";
-            FormClosing += FrmBrowEmisores_FormClosing;
+            FormClosing += FrmBrowSesiones_FormClosing; // <-- NOMBRE CORRECTO
             Load += FrmBrowSesiones_Load;
-            Shown += FrmBrowEmisores_Shown;
+            Shown += FrmBrowSesiones_Shown;
             pnTools.ResumeLayout(false);
             pnTools.PerformLayout();
             tsHerramientas.ResumeLayout(false);

@@ -272,9 +272,9 @@
             Controls.Add(pnTools);
             Name = "FrmBrowSalas";
             Text = "Gestión de Salas";
-            FormClosing += FrmBrowEmisores_FormClosing;
+            FormClosing += FrmBrowSalas_FormClosing;
             Load += FrmBrowSalas_Load;
-            Shown += FrmBrowEmisores_Shown;
+            Shown += FrmBrowSalas_Shown;
             pnTools.ResumeLayout(false);
             pnTools.PerformLayout();
             tsHerramientas.ResumeLayout(false);

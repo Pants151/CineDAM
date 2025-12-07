@@ -96,23 +96,40 @@ namespace CineDAM.Formularios
         {
             if (!ValidarDatos()) return;
 
-            // --- CORRECCIÓN CLAVE ---
-            // Asignamos manualmente los valores para asegurar que no vayan como NULL
-            if (_bs.Current is DataRowView row)
+            // Recogemos valores de los controles
+            string titulo = txtTitulo.Text;
+            int duracion = (int)numDuracion.Value;
+            string clasificacion = cmbClasificacion.Text;
+            string poster = txtPosterURL.Text;
+
+            DataRowView row = (DataRowView)_bs.Current;
+            bool esNuevo = row.IsNew;
+
+            string sql = "";
+            if (esNuevo)
+                sql = "INSERT INTO Pelicula (titulo, duracion_min, clasificacion, poster_url) VALUES (@tit, @dur, @clas, @post)";
+            else
             {
-                row["duracion_min"] = (int)numDuracion.Value;
-                row["clasificacion"] = cmbClasificacion.Text;
+                int id = Convert.ToInt32(row["id_pelicula"]);
+                sql = "UPDATE Pelicula SET titulo=@tit, duracion_min=@dur, clasificacion=@clas, poster_url=@post WHERE id_pelicula=@id";
             }
-            // ------------------------
 
             try
             {
-                _bs.EndEdit();
-                this.ValidateChildren();
-                _tabla.GuardarCambios();
+                using (var cmd = new MySqlCommand(sql, Program.appCine.LaConexion))
+                {
+                    cmd.Parameters.AddWithValue("@tit", titulo);
+                    cmd.Parameters.AddWithValue("@dur", duracion);
+                    cmd.Parameters.AddWithValue("@clas", clasificacion);
+                    cmd.Parameters.AddWithValue("@post", poster);
+                    if (!esNuevo) cmd.Parameters.AddWithValue("@id", row["id_pelicula"]);
 
-                // Notificamos a otras ventanas que hubo cambios
-                AppCine.NotificarCambioDatos();
+                    cmd.ExecuteNonQuery();
+                }
+
+                // IMPORTANTE: Cancelar edición del BindingSource local para no confundir al grid padre
+                _bs.CancelEdit();
+                AppCine.NotificarCambioDatos(); // Avisar a todos
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
