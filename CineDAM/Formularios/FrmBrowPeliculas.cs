@@ -1,14 +1,6 @@
 ﻿using CineDAM.Modelos;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.IO; // Para Path
 
 namespace CineDAM.Formularios
 {
@@ -33,9 +25,11 @@ namespace CineDAM.Formularios
                 _bs.DataSource = _tabla.LaTabla;
                 dgTabla.DataSource = _bs;
                 PersonalizarDataGrid();
+                ActualizarEstado();
             }
             else
             {
+                Program.appCine.RegistrarLog("Error Carga Películas", "Falló InicializarDatos. Ver logs anteriores.");
                 MessageBox.Show("No se pudieron cargar las películas.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ActualizarEstado();
             }
@@ -158,8 +152,19 @@ namespace CineDAM.Formularios
                 string titulo = row["titulo"].ToString();
                 if (MessageBox.Show($"¿Eliminar '{titulo}'?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
-                    try { _bs.RemoveCurrent(); _tabla.GuardarCambios(); ActualizarEstado(); }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    try
+                    {
+                        _bs.RemoveCurrent();
+                        _tabla.GuardarCambios();
+                        ActualizarEstado();
+                        Program.appCine.RegistrarLog("Baja Película", "Película eliminada correctamente.");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Message);
+                        // LOG DE ERROR CONCRETO
+                        Program.appCine.RegistrarLog("Error Baja Película", $"No se pudo borrar. Excepción: {ex.StackTrace}");
+                    }
                 }
             }
         }

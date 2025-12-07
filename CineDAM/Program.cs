@@ -10,26 +10,39 @@ namespace CineDAM
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            appCine = new AppCine(); // Inicia la App y carga la config
+            appCine = new AppCine();
 
-            // 1. Mostramos el Login
-            FrmLogin frmLogin = new FrmLogin();
-            DialogResult loginResult = frmLogin.ShowDialog();
+            bool salirAplicacion = false;
 
-            // 2. Si el login es exitoso, comprobamos el rol
-            if (loginResult == DialogResult.OK)
+            while (!salirAplicacion)
             {
-                // 3. Según el estado, abrimos un formulario u otro
-                if (appCine.estadoApp == CineDAM.Modelos.EstadoApp.AdminLogueado)
+                // 1. Mostrar Login
+                FrmLogin frmLogin = new FrmLogin();
+                DialogResult loginResult = frmLogin.ShowDialog();
+
+                if (loginResult == DialogResult.OK)
                 {
-                    Application.Run(new Formularios.FrmAdminMDI()); // Lanza el panel de Admin
+                    // 2. Si login OK, abrir formulario principal según rol
+                    if (appCine.estadoApp == CineDAM.Modelos.EstadoApp.AdminLogueado)
+                    {
+                        // Ejecutamos el Admin MDI como modal también para controlar el retorno
+                        FrmAdminMDI frmAdmin = new FrmAdminMDI();
+                        frmAdmin.ShowDialog();
+
+                        // Al cerrar frmAdmin, el bucle while vuelve a empezar (mostrando Login)
+                    }
+                    else if (appCine.estadoApp == CineDAM.Modelos.EstadoApp.TaquillaAbierta)
+                    {
+                        FrmTaquilla frmTaquilla = new FrmTaquilla();
+                        frmTaquilla.ShowDialog();
+                    }
                 }
-                else if (appCine.estadoApp == CineDAM.Modelos.EstadoApp.TaquillaAbierta)
+                else
                 {
-                    Application.Run(new FrmTaquilla());
+                    // Si cancela el login, salimos del bucle y de la app
+                    salirAplicacion = true;
                 }
             }
-            // Si el loginResult es "Cancel", la aplicación simplemente se cierra.
         }
     }
 }

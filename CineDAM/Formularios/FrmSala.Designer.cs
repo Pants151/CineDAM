@@ -37,7 +37,7 @@
             panel1.Controls.Add(btn_cancelar);
             panel1.Controls.Add(btn_aceptar);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 183);
+            panel1.Location = new Point(0, 133);
             panel1.Name = "panel1";
             panel1.Size = new Size(379, 60);
             panel1.TabIndex = 0;
@@ -76,7 +76,7 @@
             btn_aceptar.Name = "btn_aceptar";
             btn_aceptar.Size = new Size(100, 30);
             btn_aceptar.TabIndex = 0;
-            btn_aceptar.Text = "ACEPTAR";
+            btn_aceptar.Text = "Aceptar";
             btn_aceptar.TextAlign = ContentAlignment.MiddleRight;
             btn_aceptar.UseVisualStyleBackColor = false;
             btn_aceptar.Click += btn_aceptar_Click;
@@ -94,7 +94,7 @@
             panel2.ForeColor = Color.White;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(379, 183);
+            panel2.Size = new Size(379, 133);
             panel2.TabIndex = 1;
             // 
             // numColumnas
@@ -102,11 +102,11 @@
             numColumnas.BackColor = Color.FromArgb(40, 40, 40);
             numColumnas.BorderStyle = BorderStyle.FixedSingle;
             numColumnas.ForeColor = Color.White;
-            numColumnas.Location = new Point(87, 121);
+            numColumnas.Location = new Point(278, 80);
             numColumnas.Maximum = new decimal(new int[] { 50, 0, 0, 0 });
             numColumnas.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numColumnas.Name = "numColumnas";
-            numColumnas.Size = new Size(240, 23);
+            numColumnas.Size = new Size(49, 23);
             numColumnas.TabIndex = 6;
             numColumnas.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 
@@ -115,11 +115,11 @@
             numFilas.BackColor = Color.FromArgb(40, 40, 40);
             numFilas.BorderStyle = BorderStyle.FixedSingle;
             numFilas.ForeColor = Color.White;
-            numFilas.Location = new Point(87, 78);
+            numFilas.Location = new Point(48, 80);
             numFilas.Maximum = new decimal(new int[] { 50, 0, 0, 0 });
             numFilas.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numFilas.Name = "numFilas";
-            numFilas.Size = new Size(240, 23);
+            numFilas.Size = new Size(49, 23);
             numFilas.TabIndex = 5;
             numFilas.Value = new decimal(new int[] { 8, 0, 0, 0 });
             // 
@@ -129,7 +129,7 @@
             txtNombre.BorderStyle = BorderStyle.FixedSingle;
             txtNombre.ForeColor = Color.White;
             txtNombre.Location = new Point(84, 22);
-            txtNombre.MaxLength = 50;
+            txtNombre.MaxLength = 100;
             txtNombre.Name = "txtNombre";
             txtNombre.Size = new Size(243, 23);
             txtNombre.TabIndex = 4;
@@ -138,21 +138,21 @@
             // 
             lblFila.AutoSize = true;
             lblFila.ForeColor = Color.LightGray;
-            lblFila.Location = new Point(32, 80);
+            lblFila.Location = new Point(12, 82);
             lblFila.Name = "lblFila";
-            lblFila.Size = new Size(30, 15);
+            lblFila.Size = new Size(33, 15);
             lblFila.TabIndex = 3;
-            lblFila.Text = "Filas";
+            lblFila.Text = "Filas:";
             // 
             // lblColumna
             // 
             lblColumna.AutoSize = true;
             lblColumna.ForeColor = Color.LightGray;
-            lblColumna.Location = new Point(7, 121);
+            lblColumna.Location = new Point(211, 80);
             lblColumna.Name = "lblColumna";
-            lblColumna.Size = new Size(61, 15);
+            lblColumna.Size = new Size(64, 15);
             lblColumna.TabIndex = 2;
-            lblColumna.Text = "Columnas";
+            lblColumna.Text = "Columnas:";
             // 
             // lblNombre
             // 
@@ -160,20 +160,21 @@
             lblNombre.ForeColor = Color.LightGray;
             lblNombre.Location = new Point(11, 25);
             lblNombre.Name = "lblNombre";
-            lblNombre.Size = new Size(51, 15);
+            lblNombre.Size = new Size(54, 15);
             lblNombre.TabIndex = 0;
-            lblNombre.Text = "Nombre";
+            lblNombre.Text = "Nombre:";
             // 
             // FrmSala
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(15, 15, 15);
-            ClientSize = new Size(379, 243);
+            ClientSize = new Size(379, 193);
             Controls.Add(panel2);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "FrmSala";
-            Text = "Editar Sala";
+            Text = "Sala";
             Load += FrmSala_Load;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);

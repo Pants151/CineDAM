@@ -117,33 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btn_cancelar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DAAACwwBP0AiyAAAAwxJREFUOE9tkUlMU0Ech9+b7u3ro2gpi2JRKJsIalSQoBgRjHtcwBAiKsqiDRqI
-        BDEaE5eDEXEJEtEYAyKJHjxwwAUXVARlKTtFbCmtBaSiclCrRvmZviIG5EvmNt83M/+hqCno3ct49WXI
-        N5u17FFzJptt1rKrzPtZ6eR9/6HfIlEbdzEPBvJcR22nPTFc4ItPRQvw+UYcbBdj7L3pyjNvk2SiyR5H
-        W4woypAs+2Y5yMJygIX1kAsGjyjw/rgrbKemYfisB0ZK18J0wE/ftVHiNkFuXMT37doksRt2yGDczcCU
-        Loclk4U12wX9uQoMHnWGhk644uOlEPQkuTW1Rgv5/wKLBbX6zVJ0b5XCuNcLlsPzYUqVw7yfheNG1pzp
-        sF1YhoE8hfNWJ9XQRQqzOPlZAAlsXiFCe5wYXeslsN08BoyOYuhaOnpTGPRplfhuqIWD/jw13mW5oD9H
-        gc4NUgsXqPIj2pZoIVqjhWiPFUEf746fQ2YuYrueCXuPUx6pLIApTY6+DDn69slh2M3geSDxpu77keKm
-        cAF0EQK0LBeiLUYE/faZzsgYnyrO422SDI4ZGZIZGHcyMOxh8FhDwqkKH/pyw3w+Ghbw0bREgOYoIdri
-        WHztrBsPDFxKQ/cWKbq3SfEmXoo3CVLoE2W4N4cOp+7MoNJqQ3h4NZeH+lA+dJEMvrTWcOKHu0X4MWDi
-        nmMtSEXnOjE610u4WTWuFqNiFu1JlXlSPg81BDWBPNQF82DOz+Hk96XnoAsXoDV2GuzGDuD3L3RsUKFt
-        pQjtq8V4EMozjH9jmRd973kAcQwFjTGz0ZUSi9chPNSH8dGwkI/mZQoYcxOgixRDt1SAhhUilHtSieOB
-        YnfK/bY3PfLUn6A6gOBFIMHLIB5qg51P42LzxoIRApSr6aoSD4oeDzgoVNEhZTPJ8GMNwRMNQbU/wbOx
-        WM1Y7EUYHyXedPVVd0o8Qf7LBTdaUaiir5R7E3ulL0GVhuCRP0GlhuCWmgwWqmhtoYqeePJU5Ctpcb6S
-        jshX0mvOOVdQgXJq8Q8/xr/2/xLHAAAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="btn_aceptar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1
-        MAAA6mAAADqYAAAXcJy6UTwAAAAHdElNRQfpCggKHAiXoIAdAAAAiklEQVQ4T2NgoAZYn7P2/7623f+3
-        1277f37FebwYpAakFqQHbgBI4O7uG2AFhABIDUgtSM+oAVgMANHEYJwGkIJpZwCIjZ54YBhdHU4DQODu
-        vXvo4YfbgB012zAM2LN3L7p+3AbMD5xXcLhv/z+yXQACC0Lmh+2s3fYPlEnQ/Q7DsEwHwiiZiRIAAEQi
-        mwDWTupfAAAAAElFTkSuQmCC
-</value>
-  </data>
 </root>

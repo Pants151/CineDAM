@@ -14,34 +14,44 @@
 
         private void InitializeComponent()
         {
-            pnHeader = new Panel();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmTaquilla));
+            flpPeliculas = new FlowLayoutPanel();
+            pnSesion = new Panel();
             btnBuscar = new Button();
             cmbSesion = new ComboBox();
             lblSesion = new Label();
-            cmbPelicula = new ComboBox();
-            lblPelicula = new Label();
             pnFooter = new Panel();
             btnComprar = new Button();
             lblInfo = new Label();
             lblPrecio = new Label();
             pnSala = new Panel();
-            pnHeader.SuspendLayout();
+            pnSesion.SuspendLayout();
             pnFooter.SuspendLayout();
             SuspendLayout();
             // 
-            // pnHeader
+            // flpPeliculas
             // 
-            pnHeader.BackColor = Color.FromArgb(25, 25, 25);
-            pnHeader.Controls.Add(btnBuscar);
-            pnHeader.Controls.Add(cmbSesion);
-            pnHeader.Controls.Add(lblSesion);
-            pnHeader.Controls.Add(cmbPelicula);
-            pnHeader.Controls.Add(lblPelicula);
-            pnHeader.Dock = DockStyle.Top;
-            pnHeader.Location = new Point(0, 0);
-            pnHeader.Name = "pnHeader";
-            pnHeader.Size = new Size(800, 60);
-            pnHeader.TabIndex = 0;
+            flpPeliculas.AutoScroll = true;
+            flpPeliculas.BackColor = Color.FromArgb(20, 20, 20);
+            flpPeliculas.Dock = DockStyle.Top;
+            flpPeliculas.Location = new Point(0, 0);
+            flpPeliculas.Name = "flpPeliculas";
+            flpPeliculas.Padding = new Padding(10);
+            flpPeliculas.Size = new Size(1000, 210); // Altura para pósters
+            flpPeliculas.TabIndex = 0;
+            flpPeliculas.WrapContents = false; // Carrusel horizontal
+            // 
+            // pnSesion
+            // 
+            pnSesion.BackColor = Color.FromArgb(30, 30, 30);
+            pnSesion.Controls.Add(btnBuscar);
+            pnSesion.Controls.Add(cmbSesion);
+            pnSesion.Controls.Add(lblSesion);
+            pnSesion.Dock = DockStyle.Top;
+            pnSesion.Location = new Point(0, 210);
+            pnSesion.Name = "pnSesion";
+            pnSesion.Size = new Size(1000, 50);
+            pnSesion.TabIndex = 1;
             // 
             // btnBuscar
             // 
@@ -51,7 +61,7 @@
             btnBuscar.FlatStyle = FlatStyle.Flat;
             btnBuscar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnBuscar.ForeColor = Color.White;
-            btnBuscar.Location = new Point(683, 16);
+            btnBuscar.Location = new Point(883, 10);
             btnBuscar.Name = "btnBuscar";
             btnBuscar.Size = new Size(105, 30);
             btnBuscar.TabIndex = 4;
@@ -61,49 +71,27 @@
             // 
             // cmbSesion
             // 
-            cmbSesion.BackColor = Color.FromArgb(40, 40, 40);
+            cmbSesion.BackColor = Color.FromArgb(45, 45, 48);
             cmbSesion.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSesion.FlatStyle = FlatStyle.Flat;
+            cmbSesion.Font = new Font("Segoe UI", 10F);
             cmbSesion.ForeColor = Color.White;
             cmbSesion.FormattingEnabled = true;
-            cmbSesion.Location = new Point(382, 20);
+            cmbSesion.Location = new Point(75, 13);
             cmbSesion.Name = "cmbSesion";
-            cmbSesion.Size = new Size(220, 23);
+            cmbSesion.Size = new Size(300, 25);
             cmbSesion.TabIndex = 3;
             // 
             // lblSesion
             // 
             lblSesion.AutoSize = true;
-            lblSesion.Font = new Font("Segoe UI", 9.75F);
+            lblSesion.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblSesion.ForeColor = Color.LightGray;
-            lblSesion.Location = new Point(326, 22);
+            lblSesion.Location = new Point(12, 16);
             lblSesion.Name = "lblSesion";
-            lblSesion.Size = new Size(50, 17);
+            lblSesion.Size = new Size(57, 19);
             lblSesion.TabIndex = 2;
-            lblSesion.Text = "Sesión:";
-            // 
-            // cmbPelicula
-            // 
-            cmbPelicula.BackColor = Color.FromArgb(40, 40, 40);
-            cmbPelicula.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbPelicula.FlatStyle = FlatStyle.Flat;
-            cmbPelicula.ForeColor = Color.White;
-            cmbPelicula.FormattingEnabled = true;
-            cmbPelicula.Location = new Point(75, 20);
-            cmbPelicula.Name = "cmbPelicula";
-            cmbPelicula.Size = new Size(220, 23);
-            cmbPelicula.TabIndex = 1;
-            // 
-            // lblPelicula
-            // 
-            lblPelicula.AutoSize = true;
-            lblPelicula.Font = new Font("Segoe UI", 9.75F);
-            lblPelicula.ForeColor = Color.LightGray;
-            lblPelicula.Location = new Point(15, 22);
-            lblPelicula.Name = "lblPelicula";
-            lblPelicula.Size = new Size(54, 17);
-            lblPelicula.TabIndex = 0;
-            lblPelicula.Text = "Película:";
+            lblSesion.Text = "SESIÓN:";
             // 
             // pnFooter
             // 
@@ -112,10 +100,10 @@
             pnFooter.Controls.Add(lblInfo);
             pnFooter.Controls.Add(lblPrecio);
             pnFooter.Dock = DockStyle.Bottom;
-            pnFooter.Location = new Point(0, 390);
+            pnFooter.Location = new Point(0, 590);
             pnFooter.Name = "pnFooter";
-            pnFooter.Size = new Size(800, 60);
-            pnFooter.TabIndex = 1;
+            pnFooter.Size = new Size(1000, 60);
+            pnFooter.TabIndex = 2;
             // 
             // btnComprar
             // 
@@ -126,7 +114,7 @@
             btnComprar.FlatStyle = FlatStyle.Flat;
             btnComprar.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnComprar.ForeColor = Color.White;
-            btnComprar.Location = new Point(628, 10);
+            btnComprar.Location = new Point(828, 10);
             btnComprar.Name = "btnComprar";
             btnComprar.Size = new Size(160, 40);
             btnComprar.TabIndex = 8;
@@ -159,27 +147,30 @@
             // pnSala
             // 
             pnSala.AutoScroll = true;
-            pnSala.BackColor = Color.FromArgb(45, 45, 48); // Gris medio
+            pnSala.BackColor = Color.FromArgb(45, 45, 48);
             pnSala.Dock = DockStyle.Fill;
-            pnSala.Location = new Point(0, 60);
+            pnSala.Location = new Point(0, 260); // Debajo de pelis y sesión
             pnSala.Name = "pnSala";
-            pnSala.Size = new Size(800, 330);
-            pnSala.TabIndex = 2;
+            pnSala.Size = new Size(1000, 330);
+            pnSala.TabIndex = 3;
             // 
             // FrmTaquilla
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(15, 15, 15);
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1000, 650);
             Controls.Add(pnSala);
             Controls.Add(pnFooter);
-            Controls.Add(pnHeader);
+            Controls.Add(pnSesion);
+            Controls.Add(flpPeliculas);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MinimumSize = new Size(900, 600);
             Name = "FrmTaquilla";
-            Text = "Terminal de Taquilla";
+            Text = "Terminal de Taquilla - Selección Visual";
             Load += FrmTaquilla_Load;
-            pnHeader.ResumeLayout(false);
-            pnHeader.PerformLayout();
+            pnSesion.ResumeLayout(false);
+            pnSesion.PerformLayout();
             pnFooter.ResumeLayout(false);
             pnFooter.PerformLayout();
             ResumeLayout(false);
@@ -187,10 +178,9 @@
 
         #endregion
 
-        private Panel pnHeader;
+        private FlowLayoutPanel flpPeliculas; // NUEVO
+        private Panel pnSesion;
         private Label lblSesion;
-        private ComboBox cmbPelicula;
-        private Label lblPelicula;
         private ComboBox cmbSesion;
         private Button btnBuscar;
         private Panel pnFooter;

@@ -77,7 +77,7 @@
             btn_aceptar.Name = "btn_aceptar";
             btn_aceptar.Size = new Size(100, 30);
             btn_aceptar.TabIndex = 0;
-            btn_aceptar.Text = "ACEPTAR";
+            btn_aceptar.Text = "Aceptar";
             btn_aceptar.TextAlign = ContentAlignment.MiddleRight;
             btn_aceptar.UseVisualStyleBackColor = false;
             btn_aceptar.Click += btn_aceptar_Click;
@@ -107,7 +107,6 @@
             numPrecio.DecimalPlaces = 2;
             numPrecio.ForeColor = Color.White;
             numPrecio.Location = new Point(414, 80);
-            numPrecio.Maximum = new decimal(new int[] { 100, 0, 0, 0 });
             numPrecio.Name = "numPrecio";
             numPrecio.Size = new Size(120, 23);
             numPrecio.TabIndex = 7;
@@ -196,8 +195,9 @@
             ClientSize = new Size(566, 220);
             Controls.Add(panel2);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "FrmSesion";
-            Text = "Editar Sesión";
+            Text = "Sesión";
             Load += FrmSesion_Load;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);

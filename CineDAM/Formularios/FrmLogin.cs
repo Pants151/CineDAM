@@ -13,17 +13,38 @@ namespace CineDAM.Formularios
         // --- LÓGICA DE LOGIN ---
         private void btnAcceder_Click(object sender, EventArgs e)
         {
-            // Validamos quitando el texto por defecto
             string user = txtUsuario.Text == "USUARIO" ? "" : txtUsuario.Text;
             string pass = txtPassword.Text == "CONTRASEÑA" ? "" : txtPassword.Text;
 
+            // 1. PUERTA DE EMERGENCIA (ADMINISTRADOR)
+            // El admin puede entrar SIEMPRE, incluso sin base de datos, para poder arreglarla.
             if (user == "admin" && pass == "admin")
             {
                 Program.appCine.estadoApp = EstadoApp.AdminLogueado;
+
+                // Si no hay conexión, le avisamos pero le dejamos pasar
+                if (!Program.appCine.conectado)
+                {
+                    MessageBox.Show("AVISO: Estás entrando sin conexión a la Base de Datos.\n\nRecuerda ir a 'Configuración' para conectarte.",
+                                    "Modo Mantenimiento", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
                 this.DialogResult = DialogResult.OK;
                 this.Close();
+                return; // Salimos aquí para que no ejecute lo de abajo
             }
-            else if (user == "taquilla" && pass == "taquilla")
+
+            // 2. VALIDACIÓN DE CONEXIÓN (PARA EL RESTO DE USUARIOS)
+            // Si no eres admin, NECESITAS la base de datos para trabajar (Taquilla)
+            if (!Program.appCine.conectado)
+            {
+                MessageBox.Show("El sistema no está conectado a la base de datos.\nNo se puede iniciar el terminal de venta.",
+                                "Sin Conexión", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 3. LOGIN DE USUARIOS NORMALES (TAQUILLA)
+            if (user == "taquilla" && pass == "taquilla")
             {
                 Program.appCine.estadoApp = EstadoApp.TaquillaAbierta;
                 this.DialogResult = DialogResult.OK;

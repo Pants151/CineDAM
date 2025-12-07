@@ -47,7 +47,7 @@
             tsTaquilla = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsConfiguracion = new ToolStripButton();
-            tsCerrarSesion = new ToolStripButton();
+            tsSalir = new ToolStripButton();
             pnMenu.SuspendLayout();
             menuMain.SuspendLayout();
             pnStatus.SuspendLayout();
@@ -272,7 +272,7 @@
             tsMenuPrincipal.Dock = DockStyle.Bottom;
             tsMenuPrincipal.GripStyle = ToolStripGripStyle.Hidden;
             tsMenuPrincipal.ImageScalingSize = new Size(50, 50);
-            tsMenuPrincipal.Items.AddRange(new ToolStripItem[] { tsPelicula, tsSala, tsSesion, toolStripSeparator1, tsVenta, tsTaquilla, toolStripSeparator2, tsConfiguracion, tsCerrarSesion });
+            tsMenuPrincipal.Items.AddRange(new ToolStripItem[] { tsPelicula, tsSala, tsSesion, toolStripSeparator1, tsVenta, tsTaquilla, toolStripSeparator2, tsConfiguracion, tsSalir });
             tsMenuPrincipal.Location = new Point(0, 396);
             tsMenuPrincipal.Name = "tsMenuPrincipal";
             tsMenuPrincipal.Padding = new Padding(10, 5, 10, 5);
@@ -377,19 +377,19 @@
             tsConfiguracion.TextImageRelation = TextImageRelation.ImageAboveText;
             tsConfiguracion.Click += tsConfiguracion_Click;
             // 
-            // tsCerrarSesion
+            // tsSalir
             // 
-            tsCerrarSesion.Alignment = ToolStripItemAlignment.Right;
-            tsCerrarSesion.AutoSize = false;
-            tsCerrarSesion.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            tsCerrarSesion.ForeColor = Color.Silver;
-            tsCerrarSesion.Image = (Image)resources.GetObject("tsCerrarSesion.Image");
-            tsCerrarSesion.ImageTransparentColor = Color.Magenta;
-            tsCerrarSesion.Name = "tsCerrarSesion";
-            tsCerrarSesion.Size = new Size(90, 80);
-            tsCerrarSesion.Text = "Salir";
-            tsCerrarSesion.TextImageRelation = TextImageRelation.ImageAboveText;
-            tsCerrarSesion.Click += tsCerrarSesion_Click;
+            tsSalir.Alignment = ToolStripItemAlignment.Right;
+            tsSalir.AutoSize = false;
+            tsSalir.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            tsSalir.ForeColor = Color.Silver;
+            tsSalir.Image = (Image)resources.GetObject("tsSalir.Image");
+            tsSalir.ImageTransparentColor = Color.Magenta;
+            tsSalir.Name = "tsSalir";
+            tsSalir.Size = new Size(90, 80);
+            tsSalir.Text = "Salir";
+            tsSalir.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsSalir.Click += tsCerrarSesion_Click;
             // 
             // FrmAdminMDI
             // 
@@ -400,7 +400,9 @@
             Controls.Add(tsMenuPrincipal);
             Controls.Add(pnMenu);
             Controls.Add(pnStatus);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             IsMdiContainer = true;
+            MinimumSize = new Size(1056, 568);
             Name = "FrmAdminMDI";
             Text = "CineDAM - Panel de Administración";
             WindowState = FormWindowState.Maximized;
@@ -450,7 +452,7 @@
         private ToolStripButton tsTaquilla;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripSeparator toolStripSeparator2;
-        private ToolStripButton tsCerrarSesion;
+        private ToolStripButton tsSalir;
         private ToolStripButton tsVenta;
         private ToolStripButton tsConfiguracion;
     }

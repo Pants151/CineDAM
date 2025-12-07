@@ -1,8 +1,4 @@
-﻿using CineDAM.Modelos;
-using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI.Relational;
-using System.Data;
-using System.Diagnostics;
+﻿using MySql.Data.MySqlClient;
 using System.Text.Json;
 
 namespace CineDAM.Modelos
@@ -124,5 +120,13 @@ namespace CineDAM.Modelos
         }
 
         public MySqlConnection LaConexion => _conexion;
+
+        // Evento global para notificar cambios en tablas
+        public static event EventHandler DatosActualizados;
+
+        public static void NotificarCambioDatos()
+        {
+            DatosActualizados?.Invoke(null, EventArgs.Empty);
+        }
     }
 }

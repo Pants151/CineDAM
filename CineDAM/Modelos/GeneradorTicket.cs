@@ -1,12 +1,11 @@
-﻿using iText.Kernel.Pdf;
+﻿using iText.IO.Font;           // Para PdfEncodings
+using iText.IO.Font.Constants; // Para StandardFonts
+using iText.Kernel.Font;       // Para PdfFontFactory
+using iText.Kernel.Geom;
+using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using iText.Kernel.Geom;
-using System.IO;
-using iText.IO.Font.Constants; // Para StandardFonts
-using iText.Kernel.Font;       // Para PdfFontFactory
-using iText.IO.Font;           // Para PdfEncodings
 
 namespace CineDAM.Servicios
 {
