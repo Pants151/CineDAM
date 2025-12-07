@@ -6,27 +6,26 @@ namespace CineDAM.Formularios
 {
     public partial class FrmTaquilla : Form
     {
-        // Variables para controlar el estado actual
         private int _idSesionActual = -1;
         private decimal _precioSesion = 0;
-
-        // Para saber qué asiento ha clicado el usuario (fila, columna)
         private Point _asientoSeleccionado = new Point(-1, -1);
         private Button _botonSeleccionado = null;
 
         public FrmTaquilla()
         {
             InitializeComponent();
+            // Conexión manual de eventos para asegurar funcionamiento
+            this.Load += FrmTaquilla_Load;
+            cmbPelicula.SelectedIndexChanged += cmbPelicula_SelectedIndexChanged;
+            btnBuscar.Click += btnBuscar_Click;
         }
 
         private void FrmTaquilla_Load(object sender, EventArgs e)
         {
             CargarPeliculas();
-            // Desactivar botón de compra hasta que se seleccione algo
             btnComprar.Enabled = false;
         }
 
-        // 1. Cargar el ComboBox de Películas
         private void CargarPeliculas()
         {
             Tabla t = new Tabla(Program.appCine.LaConexion);
@@ -36,13 +35,11 @@ namespace CineDAM.Formularios
                 cmbPelicula.DisplayMember = "titulo";
                 cmbPelicula.ValueMember = "id_pelicula";
 
-                // Al cargar películas, cargamos las sesiones de la primera (si hay)
                 if (cmbPelicula.Items.Count > 0)
                     CargarSesiones((int)cmbPelicula.SelectedValue);
             }
         }
 
-        // 2. Al cambiar de película, cargamos sus sesiones
         private void cmbPelicula_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cmbPelicula.SelectedValue is int idPeli)
@@ -51,14 +48,13 @@ namespace CineDAM.Formularios
             }
         }
 
-        // 3. Cargar el ComboBox de Sesiones
         private void CargarSesiones(int idPelicula)
         {
             Tabla t = new Tabla(Program.appCine.LaConexion);
-            // Traemos también el nombre de la sala y el precio para mostrarlo
+            // Consulta para llenar el combo de sesiones
             string sql = $"SELECT s.id_sesion, s.precio, CONCAT(sa.nombre, ' - ', DATE_FORMAT(s.hora_inicio, '%H:%i')) as info " +
                          $"FROM Sesion s JOIN Sala sa ON s.id_sala = sa.id_sala " +
-                         $"WHERE s.id_pelicula = {idPelicula} AND s.hora_inicio > NOW() " +
+                         $"WHERE s.id_pelicula = {idPelicula} " +
                          $"ORDER BY s.hora_inicio";
 
             if (t.InicializarDatos(sql))
@@ -67,23 +63,22 @@ namespace CineDAM.Formularios
                 cmbSesion.DisplayMember = "info";
                 cmbSesion.ValueMember = "id_sesion";
 
-                // Limpiamos la sala visualmente si cambiamos de peli
+                // Limpiar área visual al cambiar de película
                 pnSala.Controls.Clear();
                 btnComprar.Enabled = false;
+                lblPrecio.Text = "Precio: 0,00 €";
             }
             else
             {
-                // Si no hay sesiones, limpiar combo
                 cmbSesion.DataSource = null;
+                pnSala.Controls.Clear();
             }
         }
 
-        // 4. BOTÓN "CARGAR SALA"
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             if (cmbSesion.SelectedValue == null) return;
 
-            // Obtenemos datos de la sesión seleccionada
             DataRowView row = (DataRowView)cmbSesion.SelectedItem;
             _idSesionActual = (int)row["id_sesion"];
             _precioSesion = Convert.ToDecimal(row["precio"]);
@@ -93,30 +88,24 @@ namespace CineDAM.Formularios
             DibujarSala(_idSesionActual);
         }
 
-        // 5. EL NÚCLEO: DIBUJAR LOS ASIENTOS
         private void DibujarSala(int idSesion)
         {
             pnSala.Controls.Clear();
             _asientoSeleccionado = new Point(-1, -1);
             btnComprar.Enabled = false;
+            lblInfo.Text = "Selecciona un asiento...";
 
-            // A) Obtener dimensiones de la sala (Filas y Columnas)
-            string sqlSala = $"SELECT sa.filas, sa.columnas FROM Sala sa " +
-                             $"JOIN Sesion s ON s.id_sala = sa.id_sala " +
-                             $"WHERE s.id_sesion = {idSesion}";
-
+            // 1. Obtener dimensiones de la sala
+            string sqlSala = $"SELECT sa.filas, sa.columnas FROM Sala sa JOIN Sesion s ON s.id_sala = sa.id_sala WHERE s.id_sesion = {idSesion}";
             DataTable dtSala = new DataTable();
-            using (var cmd = new MySqlDataAdapter(sqlSala, Program.appCine.LaConexion))
-            {
-                cmd.Fill(dtSala);
-            }
+            using (var cmd = new MySqlDataAdapter(sqlSala, Program.appCine.LaConexion)) { cmd.Fill(dtSala); }
 
             if (dtSala.Rows.Count == 0) return;
 
             int filas = Convert.ToInt32(dtSala.Rows[0]["filas"]);
             int cols = Convert.ToInt32(dtSala.Rows[0]["columnas"]);
 
-            // B) Obtener asientos ocupados (Entradas vendidas)
+            // 2. Obtener asientos ocupados
             List<Point> ocupados = new List<Point>();
             string sqlOcupados = $"SELECT fila, columna FROM venta WHERE id_sesion = {idSesion}";
             using (var cmd = new MySqlCommand(sqlOcupados, Program.appCine.LaConexion))
@@ -128,9 +117,9 @@ namespace CineDAM.Formularios
                 }
             }
 
-            // C) Generar botones dinámicamente
-            int btnSize = 40; // Tamaño del botón
-            int gap = 5;      // Espacio entre botones
+            // 3. Dibujar botones
+            int btnSize = 45;
+            int gap = 8;
 
             for (int f = 1; f <= filas; f++)
             {
@@ -139,24 +128,28 @@ namespace CineDAM.Formularios
                     Button btn = new Button();
                     btn.Size = new Size(btnSize, btnSize);
                     btn.Location = new Point((c - 1) * (btnSize + gap) + 20, (f - 1) * (btnSize + gap) + 20);
-                    btn.Text = $"{f}-{c}"; // Texto ej: "1-1"
-                    btn.Tag = new Point(c, f); // Guardamos la coordenada en el Tag (Col, Fila)
+                    btn.Text = $"{f}-{c}";
+                    btn.Tag = new Point(c, f);
 
-                    // Verificar si está ocupado
-                    Point pActual = new Point(c, f);
-                    if (ocupados.Contains(pActual))
+                    // Estilo Dark Mode
+                    btn.FlatStyle = FlatStyle.Flat;
+                    btn.FlatAppearance.BorderSize = 0;
+                    btn.Font = new Font("Segoe UI", 8);
+                    btn.ForeColor = Color.Black;
+
+                    // Verificar estado
+                    if (ocupados.Contains(new Point(c, f)))
                     {
-                        btn.BackColor = Color.Red;
-                        btn.Enabled = false; // No se puede clicar
+                        // OCUPADO
+                        btn.BackColor = Color.IndianRed;
+                        btn.Enabled = false; // IMPIDE CLICAR O RE-COMPRAR
                     }
                     else
                     {
-                        btn.BackColor = Color.LightGreen;
-                        btn.Click += Asiento_Click; // Asignamos el evento click
-
-                        // Evento MouseDown para detectar el doble clic
-                        btn.MouseDown += Asiento_MouseDown;
-                        // --------------------------
+                        // LIBRE
+                        btn.BackColor = Color.DarkSeaGreen;
+                        btn.Click += Asiento_Click;
+                        btn.MouseDown += Asiento_MouseDown; // Habilita doble clic
                     }
 
                     pnSala.Controls.Add(btn);
@@ -164,68 +157,63 @@ namespace CineDAM.Formularios
             }
         }
 
-        // 6. EVENTO AL CLICAR UN ASIENTO
         private void Asiento_Click(object sender, EventArgs e)
         {
             Button btnClicado = (Button)sender;
 
-            // Si ya había uno seleccionado, lo volvemos a poner verde
-            if (_botonSeleccionado != null)
+            // Deseleccionar anterior si existe
+            if (_botonSeleccionado != null && _botonSeleccionado != btnClicado)
             {
-                _botonSeleccionado.BackColor = Color.LightGreen;
+                _botonSeleccionado.BackColor = Color.DarkSeaGreen;
             }
 
-            // Marcamos el nuevo como seleccionado (Azul/Amarillo)
+            // Seleccionar nuevo
             _botonSeleccionado = btnClicado;
-            _botonSeleccionado.BackColor = Color.Yellow;
+            _botonSeleccionado.BackColor = Color.Gold;
             _asientoSeleccionado = (Point)btnClicado.Tag;
 
-            lblInfo.Text = $"Asiento seleccionado: Fila {_asientoSeleccionado.Y}, Columna {_asientoSeleccionado.X}";
+            lblInfo.Text = $"SELECCIONADO: Fila {_asientoSeleccionado.Y} | Asiento {_asientoSeleccionado.X}";
             btnComprar.Enabled = true;
         }
 
-        // Nuevo evento para gestionar el doble clic
         private void Asiento_MouseDown(object sender, MouseEventArgs e)
         {
-            // Verificamos si es un doble clic
+            // Atajo: Doble clic izquierdo para comprar directamente
             if (e.Button == MouseButtons.Left && e.Clicks == 2)
             {
-                // 1. Forzamos la selección del asiento (igual que si hiciera un click simple)
-                // Esto asegura que _idSesionActual y _asientoSeleccionado estén actualizados
-                Asiento_Click(sender, e);
-
-                // 2. Ejecutamos la compra directamente
-                // Llamamos al método del botón comprar o usamos PerformClick()
-                btnComprar.PerformClick();
+                Asiento_Click(sender, e); // Aseguramos que se seleccione visualmente
+                btnComprar.PerformClick(); // Ejecutamos la compra
             }
         }
 
-        // 7. BOTÓN "VENDER ENTRADA"
         private void btnComprar_Click(object sender, EventArgs e)
         {
             if (_idSesionActual == -1 || _asientoSeleccionado.X == -1) return;
 
-            if (MessageBox.Show("¿Confirmar venta?", "Venta", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show("¿Confirmar venta de entrada?", "Confirmar Venta", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 try
                 {
-                        string sql = $"INSERT INTO venta (id_sesion, fila, columna) VALUES " +
-                            $"({_idSesionActual}, {_asientoSeleccionado.Y}, {_asientoSeleccionado.X})";
+                    string sql = $"INSERT INTO venta (id_sesion, fila, columna) VALUES " +
+                                 $"({_idSesionActual}, {_asientoSeleccionado.Y}, {_asientoSeleccionado.X})";
 
                     using (var cmd = new MySqlCommand(sql, Program.appCine.LaConexion))
                     {
                         cmd.ExecuteNonQuery();
                     }
 
-                    MessageBox.Show("¡Entrada vendida correctamente!");
+                    MessageBox.Show("¡Venta realizada correctamente!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Recargamos la sala para que el asiento aparezca rojo
+                    // Recargar sala para bloquear el asiento vendido
                     DibujarSala(_idSesionActual);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al vender: " + ex.Message);
-                    Program.appCine.RegistrarLog("Error Venta Taquilla", ex.StackTrace);
+                    MessageBox.Show("Error al procesar la venta: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.appCine.RegistrarLog("Error Venta", ex.Message);
+
+                    // Si hubo error, recargamos por seguridad (quizás alguien más lo compró antes)
+                    DibujarSala(_idSesionActual);
                 }
             }
         }

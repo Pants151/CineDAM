@@ -1,5 +1,6 @@
 ﻿using CineDAM.Modelos;
-using System.IO; // Necesario para manejar archivos
+using MySql.Data.MySqlClient;
+using System.IO;
 
 namespace CineDAM.Formularios
 {
@@ -8,8 +9,6 @@ namespace CineDAM.Formularios
         private BindingSource _bs;
         private Tabla _tabla;
         public bool edicion;
-
-        // Ruta base donde guardaremos las imágenes
         private string _rutaImagenes = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Imagenes");
 
         public FrmPelicula(BindingSource bs, Tabla tabla)
@@ -17,8 +16,6 @@ namespace CineDAM.Formularios
             InitializeComponent();
             _bs = bs;
             _tabla = tabla;
-
-            // Crear carpeta si no existe
             if (!Directory.Exists(_rutaImagenes)) Directory.CreateDirectory(_rutaImagenes);
         }
 
@@ -37,7 +34,6 @@ namespace CineDAM.Formularios
             cmbClasificacion.DataBindings.Add("Text", _bs, "clasificacion", true);
             txtPosterURL.DataBindings.Add("Text", _bs, "poster_url", true);
 
-            // Cargar imagen en el PictureBox si ya existe ruta
             if (txtPosterURL.Text.Length > 0)
             {
                 CargarPrevisualizacion(txtPosterURL.Text);
@@ -53,18 +49,11 @@ namespace CineDAM.Formularios
                 {
                     try
                     {
-                        // 1. Generar un nombre único para evitar duplicados (ej: poster_12345.jpg)
                         string extension = Path.GetExtension(ofd.FileName);
                         string nombreArchivo = $"poster_{DateTime.Now.Ticks}{extension}";
                         string destino = Path.Combine(_rutaImagenes, nombreArchivo);
-
-                        // 2. Copiar la imagen a nuestra carpeta local
                         File.Copy(ofd.FileName, destino, true);
-
-                        // 3. Guardar solo el nombre del archivo en el TextBox (y en la BD)
                         txtPosterURL.Text = nombreArchivo;
-
-                        // 4. Mostrar
                         CargarPrevisualizacion(nombreArchivo);
                     }
                     catch (Exception ex)
@@ -80,7 +69,6 @@ namespace CineDAM.Formularios
             string rutaCompleta = Path.Combine(_rutaImagenes, nombreArchivo);
             if (File.Exists(rutaCompleta))
             {
-                // Usamos FileStream para no bloquear el archivo en disco
                 using (var fs = new FileStream(rutaCompleta, FileMode.Open, FileAccess.Read))
                 {
                     pbPoster.Image = Image.FromStream(fs);
@@ -88,7 +76,7 @@ namespace CineDAM.Formularios
             }
             else
             {
-                pbPoster.Image = null; // O poner una imagen "No disponible" por defecto
+                pbPoster.Image = null;
             }
         }
 

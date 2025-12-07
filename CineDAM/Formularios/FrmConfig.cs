@@ -9,32 +9,28 @@ namespace CineDAM.Formularios
         public FrmConfig()
         {
             InitializeComponent();
-            // Aseguramos que el evento Load se dispara
             this.Load += FrmConnection_Load;
         }
 
         private void FrmConnection_Load(object sender, EventArgs e)
         {
-            // Esto funciona aunque el estado sea 'AdminLogueado'
             if (Program.appCine.conectado && Program.appCine.configConexion != null)
             {
                 txtServidor.Text = Program.appCine.configConexion.servidor;
-                txtPuerto.Text = Program.appCine.configConexion.puerto.ToString();
+                numPuerto.Value = Program.appCine.configConexion.puerto;
                 txtUsuario.Text = Program.appCine.configConexion.usuario;
                 txtPassword.Text = Program.appCine.configConexion.password;
                 txtBaseDatos.Text = Program.appCine.configConexion.baseDatos;
             }
             else
             {
-                // Si no hay conexión o configuración, limpiamos (o dejamos valores por defecto)
                 txtServidor.Text = "";
-                txtPuerto.Text = "3306";
+                numPuerto.Value = 3306;
                 txtUsuario.Text = "root";
                 txtPassword.Text = "";
                 txtBaseDatos.Text = "cinedam";
             }
 
-            // Actualizamos el estado visual de los botones y paneles
             SetControlesEstadoConexion(false);
         }
 
@@ -42,26 +38,18 @@ namespace CineDAM.Formularios
         {
             try
             {
-                if (Program.appCine.conectado) // Si ya estaba conectado, desconecta
+                if (Program.appCine.conectado)
                 {
                     SetControlesEstadoConexion(true);
                     Program.appCine.DesconectarDB();
                     SetControlesEstadoConexion(false);
                 }
-                else // Si no está conectado, intentamos conectar
+                else
                 {
-                    // Validar puerto
-                    if (!int.TryParse(txtPuerto.Text, out int puertoNum))
-                    {
-                        MessageBox.Show("El puerto debe ser un valor numérico.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    // Crear configuración nueva con los datos del formulario
                     ConfiguracionConexion config = new ConfiguracionConexion
                     {
                         servidor = txtServidor.Text,
-                        puerto = puertoNum,
+                        puerto = (int)numPuerto.Value, // Ahora usamos .Value
                         usuario = txtUsuario.Text,
                         password = txtPassword.Text,
                         baseDatos = txtBaseDatos.Text
@@ -87,48 +75,44 @@ namespace CineDAM.Formularios
             if (enProceso)
             {
                 tsStatusLabel.Text = "Procesando...";
-                tsStatusLabel.ForeColor = Color.Black;
+                tsStatusLabel.ForeColor = Color.White;
                 tsProgressBarConexion.Style = ProgressBarStyle.Marquee;
                 btnConexion.Enabled = false;
-                pnData.Enabled = false; // Siempre deshabilitado mientras procesa
+                pnData.Enabled = false;
             }
             else
             {
                 tsProgressBarConexion.Style = ProgressBarStyle.Blocks;
                 btnConexion.Enabled = true;
 
-                // CAMBIO CLAVE: Usamos .conectado aquí también
                 if (Program.appCine.conectado)
                 {
-                    // Si estamos conectados:
-                    // 1. Bloqueamos los campos para no editar en caliente
                     pnData.Enabled = false;
 
-                    // 2. Botón sirve para desconectar
-                    btnConexion.Text = "Cerrar conexión";
+                    // Botón ROJO para desconectar
+                    btnConexion.Text = "CERRAR CONEXIÓN";
+                    btnConexion.BackColor = Color.FromArgb(192, 0, 0);
 
-                    // 3. Status verde
                     tsStatusLabel.Text = "Conexión establecida correctamente.";
-                    tsStatusLabel.ForeColor = Color.Green;
+                    tsStatusLabel.ForeColor = Color.LightGreen;
                 }
                 else
                 {
-                    // Si NO estamos conectados:
-                    // 1. Habilitamos campos para poder escribir
                     pnData.Enabled = true;
 
-                    // 2. Botón sirve para conectar
-                    btnConexion.Text = "Conectar";
+                    // Botón AZUL para conectar
+                    btnConexion.Text = "CONECTAR";
+                    btnConexion.BackColor = Color.FromArgb(0, 122, 204);
 
                     if (aError == "")
                     {
                         tsStatusLabel.Text = "Conexión cerrada.";
-                        tsStatusLabel.ForeColor = Color.Black;
+                        tsStatusLabel.ForeColor = Color.White;
                     }
                     else
                     {
                         tsStatusLabel.Text = "Error: " + aError;
-                        tsStatusLabel.ForeColor = Color.Red;
+                        tsStatusLabel.ForeColor = Color.IndianRed;
                     }
                 }
             }
@@ -147,7 +131,6 @@ namespace CineDAM.Formularios
                 try
                 {
                     Program.appCine.ConfiguraYConectaDB(dlg.FileName);
-                    // Forzamos la recarga de los datos en pantalla llamando al Load o copiando la lógica
                     FrmConnection_Load(sender, e);
                 }
                 catch (Exception ex)
@@ -170,7 +153,7 @@ namespace CineDAM.Formularios
                 ConfiguracionConexion config = new ConfiguracionConexion
                 {
                     servidor = txtServidor.Text,
-                    puerto = int.Parse(txtPuerto.Text),
+                    puerto = (int)numPuerto.Value,
                     usuario = txtUsuario.Text,
                     password = txtPassword.Text,
                     baseDatos = txtBaseDatos.Text

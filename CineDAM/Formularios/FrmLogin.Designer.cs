@@ -2,15 +2,8 @@
 {
     partial class FrmLogin
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,123 +15,196 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            lbl_usuario = new Label();
-            lbl_contrasenya = new Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmLogin));
+            panelSide = new Panel();
+            pictureBox1 = new PictureBox();
+            lblTitulo = new Label();
             txtUsuario = new TextBox();
+            panelUserLine = new Panel();
             txtPassword = new TextBox();
-            btnAceptar = new Button();
-            panel1 = new Panel();
-            panel2 = new Panel();
-            btnCancelar = new Button();
-            panel1.SuspendLayout();
-            panel2.SuspendLayout();
+            panelPassLine = new Panel();
+            lblLogin = new Label();
+            btnAcceder = new Button();
+            btnCerrar = new PictureBox();
+            btnMinimizar = new PictureBox();
+            panelSide.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btnCerrar).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btnMinimizar).BeginInit();
             SuspendLayout();
             // 
-            // lbl_usuario
+            // panelSide
             // 
-            lbl_usuario.AutoSize = true;
-            lbl_usuario.Location = new Point(32, 27);
-            lbl_usuario.Name = "lbl_usuario";
-            lbl_usuario.Size = new Size(47, 15);
-            lbl_usuario.TabIndex = 0;
-            lbl_usuario.Text = "Usuario";
+            panelSide.BackColor = Color.FromArgb(0, 122, 204);
+            panelSide.Controls.Add(pictureBox1);
+            panelSide.Controls.Add(lblTitulo);
+            panelSide.Dock = DockStyle.Left;
+            panelSide.Location = new Point(0, 0);
+            panelSide.Name = "panelSide";
+            panelSide.Size = new Size(250, 330);
+            panelSide.TabIndex = 0;
+            panelSide.MouseDown += Panel_MouseDown;
             // 
-            // lbl_contrasenya
+            // pictureBox1
             // 
-            lbl_contrasenya.AutoSize = true;
-            lbl_contrasenya.Location = new Point(12, 66);
-            lbl_contrasenya.Name = "lbl_contrasenya";
-            lbl_contrasenya.Size = new Size(67, 15);
-            lbl_contrasenya.TabIndex = 1;
-            lbl_contrasenya.Text = "Contraseña";
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(68, 80);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(109, 98);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 1;
+            pictureBox1.TabStop = false;
+            // 
+            // lblTitulo
+            // 
+            lblTitulo.AutoSize = true;
+            lblTitulo.Font = new Font("Century Gothic", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitulo.ForeColor = Color.White;
+            lblTitulo.Location = new Point(65, 190);
+            lblTitulo.Name = "lblTitulo";
+            lblTitulo.Size = new Size(117, 25);
+            lblTitulo.TabIndex = 0;
+            lblTitulo.Text = "CINE DAM";
             // 
             // txtUsuario
             // 
-            txtUsuario.Location = new Point(86, 24);
+            txtUsuario.BackColor = Color.FromArgb(15, 15, 15);
+            txtUsuario.BorderStyle = BorderStyle.None;
+            txtUsuario.Font = new Font("Century Gothic", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtUsuario.ForeColor = Color.DimGray;
+            txtUsuario.Location = new Point(310, 80);
             txtUsuario.Name = "txtUsuario";
-            txtUsuario.Size = new Size(204, 23);
-            txtUsuario.TabIndex = 2;
+            txtUsuario.Size = new Size(408, 20);
+            txtUsuario.TabIndex = 1;
+            txtUsuario.Text = "USUARIO";
+            txtUsuario.Enter += txtUser_Enter;
+            txtUsuario.Leave += txtUser_Leave;
+            // 
+            // panelUserLine
+            // 
+            panelUserLine.BackColor = Color.DimGray;
+            panelUserLine.Enabled = false;
+            panelUserLine.Location = new Point(310, 107);
+            panelUserLine.Name = "panelUserLine";
+            panelUserLine.Size = new Size(408, 1);
+            panelUserLine.TabIndex = 2;
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(85, 66);
+            txtPassword.BackColor = Color.FromArgb(15, 15, 15);
+            txtPassword.BorderStyle = BorderStyle.None;
+            txtPassword.Font = new Font("Century Gothic", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtPassword.ForeColor = Color.DimGray;
+            txtPassword.Location = new Point(310, 150);
             txtPassword.Name = "txtPassword";
-            txtPassword.PasswordChar = '*';
-            txtPassword.Size = new Size(204, 23);
-            txtPassword.TabIndex = 3;
+            txtPassword.Size = new Size(408, 20);
+            txtPassword.TabIndex = 2;
+            txtPassword.Text = "CONTRASEÑA";
+            txtPassword.Enter += txtPass_Enter;
+            txtPassword.Leave += txtPass_Leave;
             // 
-            // btnAceptar
+            // panelPassLine
             // 
-            btnAceptar.Location = new Point(32, 24);
-            btnAceptar.Name = "btnAceptar";
-            btnAceptar.Size = new Size(88, 33);
-            btnAceptar.TabIndex = 4;
-            btnAceptar.Text = "Aceptar";
-            btnAceptar.UseVisualStyleBackColor = true;
-            btnAceptar.Click += btnAceptar_Click;
+            panelPassLine.BackColor = Color.DimGray;
+            panelPassLine.Enabled = false;
+            panelPassLine.Location = new Point(310, 177);
+            panelPassLine.Name = "panelPassLine";
+            panelPassLine.Size = new Size(408, 1);
+            panelPassLine.TabIndex = 4;
             // 
-            // panel1
+            // lblLogin
             // 
-            panel1.Controls.Add(txtUsuario);
-            panel1.Controls.Add(txtPassword);
-            panel1.Controls.Add(lbl_contrasenya);
-            panel1.Controls.Add(lbl_usuario);
-            panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(329, 123);
-            panel1.TabIndex = 5;
+            lblLogin.AutoSize = true;
+            lblLogin.Font = new Font("Century Gothic", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblLogin.ForeColor = Color.DimGray;
+            lblLogin.Location = new Point(450, 9);
+            lblLogin.Name = "lblLogin";
+            lblLogin.Size = new Size(100, 33);
+            lblLogin.TabIndex = 5;
+            lblLogin.Text = "LOGIN";
             // 
-            // panel2
+            // btnAcceder
             // 
-            panel2.Controls.Add(btnCancelar);
-            panel2.Controls.Add(btnAceptar);
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(0, 123);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(329, 78);
-            panel2.TabIndex = 6;
+            btnAcceder.BackColor = Color.FromArgb(40, 40, 40);
+            btnAcceder.FlatAppearance.BorderSize = 0;
+            btnAcceder.FlatAppearance.MouseDownBackColor = Color.FromArgb(28, 28, 28);
+            btnAcceder.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 64, 64);
+            btnAcceder.FlatStyle = FlatStyle.Flat;
+            btnAcceder.Font = new Font("Century Gothic", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnAcceder.ForeColor = Color.LightGray;
+            btnAcceder.Location = new Point(310, 240);
+            btnAcceder.Name = "btnAcceder";
+            btnAcceder.Size = new Size(408, 40);
+            btnAcceder.TabIndex = 3;
+            btnAcceder.Text = "ACCEDER";
+            btnAcceder.UseVisualStyleBackColor = false;
+            btnAcceder.Click += btnAcceder_Click;
             // 
-            // btnCancelar
+            // btnCerrar
             // 
-            btnCancelar.Location = new Point(202, 24);
-            btnCancelar.Name = "btnCancelar";
-            btnCancelar.Size = new Size(88, 33);
-            btnCancelar.TabIndex = 5;
-            btnCancelar.Text = "Cancelar";
-            btnCancelar.UseVisualStyleBackColor = true;
-            btnCancelar.Click += btnCancelar_Click;
+            btnCerrar.Cursor = Cursors.Hand;
+            btnCerrar.ErrorImage = (Image)resources.GetObject("btnCerrar.ErrorImage");
+            btnCerrar.Image = (Image)resources.GetObject("btnCerrar.Image");
+            btnCerrar.Location = new Point(753, 9);
+            btnCerrar.Name = "btnCerrar";
+            btnCerrar.Size = new Size(21, 19);
+            btnCerrar.SizeMode = PictureBoxSizeMode.Zoom;
+            btnCerrar.TabIndex = 7;
+            btnCerrar.TabStop = false;
+            btnCerrar.Click += btnCerrar_Click;
+            // 
+            // btnMinimizar
+            // 
+            btnMinimizar.Cursor = Cursors.Hand;
+            btnMinimizar.Location = new Point(0, 0);
+            btnMinimizar.Name = "btnMinimizar";
+            btnMinimizar.Size = new Size(100, 50);
+            btnMinimizar.TabIndex = 0;
+            btnMinimizar.TabStop = false;
             // 
             // FrmLogin
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(329, 201);
-            Controls.Add(panel2);
-            Controls.Add(panel1);
+            BackColor = Color.FromArgb(15, 15, 15);
+            ClientSize = new Size(780, 330);
+            Controls.Add(btnCerrar);
+            Controls.Add(btnAcceder);
+            Controls.Add(lblLogin);
+            Controls.Add(panelPassLine);
+            Controls.Add(txtPassword);
+            Controls.Add(panelUserLine);
+            Controls.Add(txtUsuario);
+            Controls.Add(panelSide);
+            FormBorderStyle = FormBorderStyle.None;
             Name = "FrmLogin";
+            Opacity = 0.9D;
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "FrmLogin";
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
-            panel2.ResumeLayout(false);
+            MouseDown += Panel_MouseDown;
+            panelSide.ResumeLayout(false);
+            panelSide.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btnCerrar).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btnMinimizar).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private Label lbl_usuario;
-        private Label lbl_contrasenya;
+        private Panel panelSide;
+        private Label lblTitulo;
+        private PictureBox pictureBox1;
         private TextBox txtUsuario;
+        private Panel panelUserLine;
         private TextBox txtPassword;
-        private Button btnAceptar;
-        private Panel panel1;
-        private Panel panel2;
-        private Button btnCancelar;
+        private Panel panelPassLine;
+        private Label lblLogin;
+        private Button btnAcceder;
+        private PictureBox btnCerrar;
+        private PictureBox btnMinimizar;
     }
 }

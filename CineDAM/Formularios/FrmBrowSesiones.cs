@@ -8,14 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace CineDAM.Formularios
 {
     public partial class FrmBrowSesiones : Form
     {
-        private Tabla _tabla; // Tabla a gestionar
-        private BindingSource _bs; // Para comunicación con los controles visuales
-        private Dictionary<int, string> _provincias; // Lista de provincias
+        private Tabla _tabla;
+        private BindingSource _bs;
+
         public FrmBrowSesiones()
         {
             InitializeComponent();
@@ -23,9 +24,14 @@ namespace CineDAM.Formularios
             _bs = new BindingSource();
         }
 
-        private void FrmBrowPeliculas_Load(object sender, EventArgs e)
+        private void FrmBrowSesiones_Load(object sender, EventArgs e)
         {
-            string sql = "SELECT s.id_sesion, s.id_pelicula, s.id_sala, " + 
+            CargarDatos();
+        }
+
+        private void CargarDatos()
+        {
+            string sql = "SELECT s.id_sesion, s.id_pelicula, s.id_sala, " +
              "p.titulo AS Pelicula, sa.nombre AS Sala, s.hora_inicio, s.precio " +
              "FROM Sesion s " +
              "JOIN Pelicula p ON s.id_pelicula = p.id_pelicula " +
@@ -37,119 +43,75 @@ namespace CineDAM.Formularios
                 _bs.DataSource = _tabla.LaTabla;
                 dgTabla.DataSource = _bs;
                 PersonalizarDataGrid();
-
+                ActualizarEstado();
             }
             else
             {
-                MessageBox.Show("No se pudieron cargar las películas. Revisa el log de errores.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se pudieron cargar las sesiones.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ActualizarEstado();
             }
         }
 
-        /********* METODOS PRIVADOS ***********/
-
-        // Guarda el estado de la ventana (posición y tamaño)
-        public void GuardarEstadoVentana()
-        {
-            /*if (this.WindowState == FormWindowState.Normal)
-            {
-                Properties.Settings.Default.BrowEmisoresSize = this.Size;
-                Properties.Settings.Default.BrowEmisoresLocation = this.Location;
-            }
-
-            //Guardar el estado de la ventana como string: "Normal|Maximized|Minimized"
-            Properties.Settings.Default.BrowEmisoresState = this.WindowState.ToString();
-            Properties.Settings.Default.Save();*/
-
-        }
-
-        // Restaura el estado de la ventana (posición y tamaño)
-        public void RestaurarEstadoVentana()
-        {
-            /*string estado = Properties.Settings.Default.BrowEmisoresState;
-            switch (estado)
-            {
-                case "Maximized":
-                    this.WindowState = FormWindowState.Maximized;
-                    break;
-                case "Minimized":
-                    this.WindowState = FormWindowState.Minimized;
-                    break;
-                default:
-                    this.WindowState = FormWindowState.Normal;
-                    break;
-            }
-
-            if (Properties.Settings.Default.BrowEmisoresState == "Normal")
-            {
-                this.Size = Properties.Settings.Default.BrowEmisoresSize;
-                this.Location = Properties.Settings.Default.BrowEmisoresLocation;
-            }*/
-
-        }
-
-        //Personaliza las columnas del DataGridView
         private void PersonalizarDataGrid()
         {
-            // 1. Ocultar la columna de ID (no le interesa al usuario)
+            // 1. Columnas
             dgTabla.Columns["id_sesion"].Visible = false;
-
-            //Ocultar columnas de FK
             if (dgTabla.Columns.Contains("id_pelicula")) dgTabla.Columns["id_pelicula"].Visible = false;
             if (dgTabla.Columns.Contains("id_sala")) dgTabla.Columns["id_sala"].Visible = false;
 
-            // 2. Configurar cabeceras y anchos
-            dgTabla.Columns["Pelicula"].HeaderText = "Película";
-            dgTabla.Columns["Pelicula"].Width = 200; // Más espacio para el título
+            dgTabla.Columns["Pelicula"].HeaderText = "PELÍCULA";
+            dgTabla.Columns["Sala"].HeaderText = "SALA";
+            dgTabla.Columns["hora_inicio"].HeaderText = "FECHA Y HORA";
+            dgTabla.Columns["precio"].HeaderText = "PRECIO";
 
-            dgTabla.Columns["Sala"].HeaderText = "Sala";
-            dgTabla.Columns["Sala"].Width = 80;
+            dgTabla.Columns["Pelicula"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgTabla.Columns["Sala"].Width = 100;
+            dgTabla.Columns["hora_inicio"].Width = 160;
+            dgTabla.Columns["precio"].Width = 100;
 
-            dgTabla.Columns["hora_inicio"].HeaderText = "Fecha y Hora";
-            dgTabla.Columns["hora_inicio"].Width = 140;
-            // IMPORTANTE: Formato personalizado para que se vea "06/12/2025 22:00"
+            // Formatos
             dgTabla.Columns["hora_inicio"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
-
-            dgTabla.Columns["precio"].HeaderText = "Precio";
-            dgTabla.Columns["precio"].Width = 80;
-            // Formato moneda (añade el símbolo € automáticamente)
             dgTabla.Columns["precio"].DefaultCellStyle.Format = "C2";
             dgTabla.Columns["precio"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            // 3. Estilo general (opcional, para que se vea igual que el de Películas)
-            dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.LightCyan;
-            dgTabla.EnableHeadersVisualStyles = false; // Necesario para personalizar el color de cabecera
-            dgTabla.ColumnHeadersDefaultCellStyle.BackColor = Color.LightBlue;
-            dgTabla.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            // 2. Estilos Dark Mode
+            dgTabla.BackgroundColor = Color.FromArgb(25, 25, 25);
+            dgTabla.GridColor = Color.FromArgb(45, 45, 48);
 
+            // Cabeceras
+            dgTabla.EnableHeadersVisualStyles = false;
+            dgTabla.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 122, 204);
+            dgTabla.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgTabla.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgTabla.ColumnHeadersHeight = 40;
 
-        }
+            // Filas
+            dgTabla.DefaultCellStyle.BackColor = Color.FromArgb(30, 30, 30);
+            dgTabla.DefaultCellStyle.ForeColor = Color.WhiteSmoke;
+            dgTabla.DefaultCellStyle.SelectionBackColor = Color.FromArgb(60, 60, 60);
+            dgTabla.DefaultCellStyle.SelectionForeColor = Color.White;
 
-        private string ObtenerNombreProvincia(int idProvincia)
-        {
-            return _provincias.TryGetValue(idProvincia, out string nombre) ? nombre : "Desconocida";
-
+            // Alternancia
+            dgTabla.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(35, 35, 38);
         }
 
         private void ActualizarEstado()
         {
             tslbStatus.Text = $"Nº de registros: {_bs.Count}";
         }
+
         private void btnNew_Click(object sender, EventArgs e)
         {
-            // ... validaciones previas ...
-
+            // OJO: AddNew lo dejamos aquí para que el formulario sepa que es nuevo,
+            // pero el guardado real lo hace FrmSesion manualmente.
             _bs.AddNew();
             using (FrmSesion frm = new FrmSesion(_bs, _tabla))
             {
                 frm.edicion = true;
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    // CAMBIO: En lugar de GuardarCambios(), RECARGAMOS todo
-                    // _tabla.GuardarCambios(); <--- ESTO ES LO QUE DABA ERROR, BÓRRALO
-
-                    // Llamamos al método de carga para refrescar la lista y traer los nuevos datos con sus JOINs
-                    FrmBrowPeliculas_Load(sender, e);
+                    // Al volver, recargamos todo para actualizar los JOINs
+                    CargarDatos();
                 }
                 else
                 {
@@ -157,67 +119,18 @@ namespace CineDAM.Formularios
                 }
             }
         }
-        private void btnFirst_Click(object sender, EventArgs e) => _bs.MoveFirst();
 
-        private void btnPrev_Click(object sender, EventArgs e) => _bs.MovePrevious();
-
-        private void btnNext_Click(object sender, EventArgs e) => _bs.MoveNext();
-
-
-        private void btnLast_Click(object sender, EventArgs e) => _bs.MoveLast();
-
-
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void btnEdit_Click(object sender, EventArgs e)
         {
-            // 1. Verificamos que haya una fila seleccionada
-            if (_bs.Current is DataRowView row)
+            if (_bs.Current == null) return;
+            using (FrmSesion frm = new FrmSesion(_bs, _tabla))
             {
-
-                // 3. Preguntamos confirmación al usuario
-                if (MessageBox.Show($"¿Está seguro de que desea eliminar la sesión?",
-                                    "Confirmar eliminación",
-                                    MessageBoxButtons.YesNo,
-                                    MessageBoxIcon.Warning) == DialogResult.Yes)
+                frm.edicion = true;
+                if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    try
-                    {
-                        // 1. Obtener el ID de la sesión que vamos a borrar
-                        int idSesion = (int)row["id_sesion"];
-
-                        // 2. Ejecutar el DELETE manual en la base de datos
-                        string sqlDelete = $"DELETE FROM Sesion WHERE id_sesion = {idSesion}";
-                        using (var cmd = new MySql.Data.MySqlClient.MySqlCommand(sqlDelete, Program.appCine.LaConexion))
-                        {
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        // 3. Quitarlo de la lista visual (BindingSource) para que desaparezca
-                        _bs.RemoveCurrent();
-
-                        // ¡IMPORTANTE! NO llames a _tabla.GuardarCambios() aquí.
-
-                        ActualizarEstado();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error al eliminar la película: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    CargarDatos();
                 }
             }
-        }
-
-
-        private bool TieneFacturasEmitidas(int emisorId)
-        {
-            using var cmd = new MySql.Data.MySqlClient.MySqlCommand("SELECT COUNT(*) FROM FACTURAS WHERE EMISOR_ID = @EmisorId", Program.appCine.LaConexion);
-            cmd.Parameters.AddWithValue("@EmisorId", emisorId);
-            var count = Convert.ToInt32(cmd.ExecuteScalar());
-            return count > 0;
-        }
-
-        private bool TieneFacturasRecibidas(string aNifCif)
-        {
-            return false;
         }
 
         private void dgTabla_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -225,113 +138,78 @@ namespace CineDAM.Formularios
             btnEdit_Click(sender, e);
         }
 
-        private void btnEdit_Click(object sender, EventArgs e)
+        private void btnDelete_Click(object sender, EventArgs e)
         {
-            using (FrmSesion frm = new FrmSesion(_bs, _tabla))
+            if (_bs.Current is DataRowView row)
             {
-                frm.edicion = true;
-                if (frm.ShowDialog() == DialogResult.OK)
+                if (MessageBox.Show("¿Eliminar sesión seleccionada?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
-                    // CAMBIO: Igual que arriba, recargamos
-                    FrmBrowPeliculas_Load(sender, e);
+                    try
+                    {
+                        // Borrado manual en BD
+                        int idSesion = (int)row["id_sesion"];
+                        using (var cmd = new MySql.Data.MySqlClient.MySqlCommand($"DELETE FROM Sesion WHERE id_sesion={idSesion}", Program.appCine.LaConexion))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Eliminar de la vista
+                        _bs.RemoveCurrent();
+                        ActualizarEstado();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al eliminar: " + ex.Message);
+                    }
                 }
             }
         }
 
-        // Formatear la celda de provincia para mostrar el nombre en lugar del ID
-        private void dgTabla_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        // Navegación y Exportación (Igual que los otros forms)
+        private void btnFirst_Click(object sender, EventArgs e) => _bs.MoveFirst();
+        private void btnPrev_Click(object sender, EventArgs e) => _bs.MovePrevious();
+        private void btnNext_Click(object sender, EventArgs e) => _bs.MoveNext();
+        private void btnLast_Click(object sender, EventArgs e) => _bs.MoveLast();
+
+        private void tsBtnExportCSV_Click(object sender, EventArgs e)
         {
-            if (dgTabla.Columns[e.ColumnIndex].Name == "idprovincia" && e.Value != null)
-            {
-                if (e.Value is int idProvincia)
-                {
-                    e.Value = ObtenerNombreProvincia(idProvincia);
-                    e.FormattingApplied = true;
-                }
-            }
+            SaveFileDialog sfd = new SaveFileDialog() { Filter = "CSV|*.csv" };
+            if (sfd.ShowDialog() == DialogResult.OK) Export_A_CSV(sfd.FileName);
         }
 
-        // Manejar el evento de cierre del formulario
-        private void FrmBrowEmisores_FormClosing(object sender, FormClosingEventArgs e)
+        private void tsBtnExportXML_Click(object sender, EventArgs e)
         {
-            GuardarEstadoVentana();
+            SaveFileDialog sfd = new SaveFileDialog() { Filter = "XML|*.xml" };
+            if (sfd.ShowDialog() == DialogResult.OK) Export_A_XML(sfd.FileName);
         }
 
-        private void FrmBrowEmisores_Shown(object sender, EventArgs e)
-        {
-            RestaurarEstadoVentana();
-        }
-
-        // Exportar a CSV
-        private void Export_A_CSV(string rutaArchivo)
+        private void Export_A_CSV(string ruta)
         {
             try
             {
                 DataTable dt = (DataTable)_bs.DataSource;
                 List<string> lineas = new List<string>();
-
-                //Cabezera
-                var cabecera = dt.Columns.Cast<DataColumn>().Select(col => col.ColumnName);
-                lineas.Add(string.Join(";", cabecera));
-
-                //Filas de datos
-                foreach (DataRow row in dt.Rows)
-                {
-                    var campos = row.ItemArray.Select(field => field?.ToString()?.Replace(";", ","));
-                    lineas.Add(string.Join(";", campos));
-                }
-
-                File.WriteAllLines(rutaArchivo, lineas, Encoding.UTF8);
-                MessageBox.Show("Exportación a CSV completada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                lineas.Add(string.Join(";", dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName)));
+                foreach (DataRow row in dt.Rows) lineas.Add(string.Join(";", row.ItemArray.Select(f => f?.ToString().Replace(";", ","))));
+                File.WriteAllLines(ruta, lineas, Encoding.UTF8);
+                MessageBox.Show("Exportado correctamente.");
             }
-            catch (Exception ex)
-            {
-                //Program.appDAM.RegistrarLog($"Error al exportar a CSV: {ex.Message}");
-                MessageBox.Show($"Error al exportar a CSV: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
         }
 
-        // Exportar a XML
-        private void Export_A_XML(string rutaArchivo)
+        private void Export_A_XML(string ruta)
         {
-
             try
             {
-                DataTable dt = (DataTable)_bs.DataSource;
-                dt.TableName = "Pelicula";
-                dt.WriteXml(rutaArchivo, XmlWriteMode.WriteSchema);
-                MessageBox.Show("Exportación a XML completada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ((DataTable)_bs.DataSource).WriteXml(ruta, XmlWriteMode.WriteSchema);
+                MessageBox.Show("Exportado correctamente.");
             }
-            catch (Exception ex)
-            {
-                //Program.appDAM.RegistrarLog($"Error al exportar a XML: {ex.Message}");
-                MessageBox.Show($"Error al exportar a XML: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            }
-
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
         }
 
-        // Boton que se encarga de exportar a CSV
-        private void tsBtnExportCSV_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Archivo CSV (*.csv)|*.csv";
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                Export_A_CSV(sfd.FileName);
-            }
-        }
-
-        // Boton que se encarga de exportar a XML
-        private void tsBtnExportXML_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Archivo XML (*.xml)|*.xml";
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                Export_A_XML(sfd.FileName);
-            }
-        }
+        public void GuardarEstadoVentana() { }
+        public void RestaurarEstadoVentana() { }
+        private void FrmBrowEmisores_FormClosing(object sender, FormClosingEventArgs e) { GuardarEstadoVentana(); }
+        private void FrmBrowEmisores_Shown(object sender, EventArgs e) { RestaurarEstadoVentana(); }
     }
 }
