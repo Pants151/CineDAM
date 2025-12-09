@@ -165,6 +165,7 @@
             Controls.Add(pnData);
             Controls.Add(pnFooter);
             Controls.Add(pnTools);
+            MinimumSize = new Size(816, 489);
             Name = "FrmBrowVentas";
             Text = "Historial de Ventas";
             Load += FrmBrowVentas_Load;

@@ -36,7 +36,7 @@ namespace CineDAM.Formularios
             }
         }
 
-        // --- NUEVO: Carga visual de películas ---
+        // Carga visual de películas
         private void CargarPeliculasVisual()
         {
             Tabla t = new Tabla(Program.appCine.LaConexion);
@@ -114,7 +114,7 @@ namespace CineDAM.Formularios
         private void CargarSesiones(int idPelicula)
         {
             Tabla t = new Tabla(Program.appCine.LaConexion);
-            string sql = $"SELECT s.id_sesion, s.precio, CONCAT(sa.nombre, ' - ', DATE_FORMAT(s.hora_inicio, '%H:%i')) as info " +
+            string sql = $"SELECT s.id_sesion, s.precio, CONCAT(sa.nombre, ' - ', DATE_FORMAT(s.hora_inicio, '%d/%m/%Y %H:%i')) as info " +
                          $"FROM Sesion s JOIN Sala sa ON s.id_sala = sa.id_sala " +
                          $"WHERE s.id_pelicula = {idPelicula} " +
                          $"ORDER BY s.hora_inicio";
@@ -137,16 +137,39 @@ namespace CineDAM.Formularios
             }
         }
 
-        private void btnBuscar_Click(object sender, EventArgs e)
+        // --- BOTÓN BUSCAR CON COOLDOWN DE DOS SEGUNDOS
+        private async void btnBuscar_Click(object sender, EventArgs e)
         {
             if (cmbSesion.SelectedValue == null) return;
 
-            DataRowView row = (DataRowView)cmbSesion.SelectedItem;
-            _idSesionActual = (int)row["id_sesion"];
-            _precioSesion = Convert.ToDecimal(row["precio"]);
+            // 1. Bloquear botón inmediatamente
+            btnBuscar.Enabled = false;
+            btnBuscar.Text = "CARGANDO..."; // Opcional: Feedback visual
 
-            lblPrecio.Text = $"Precio: {_precioSesion:C2}";
-            DibujarSala(_idSesionActual);
+            try
+            {
+                DataRowView row = (DataRowView)cmbSesion.SelectedItem;
+                _idSesionActual = (int)row["id_sesion"];
+                _precioSesion = Convert.ToDecimal(row["precio"]);
+
+                lblPrecio.Text = $"Precio: {_precioSesion:N2} €";
+
+                // Ejecutamos la carga
+                DibujarSala(_idSesionActual);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar la sala: " + ex.Message);
+            }
+            finally
+            {
+                // 2. Cooldown de 2 segundos (Task.Delay no bloquea la interfaz)
+                await Task.Delay(2000);
+
+                // 3. Reactivar botón
+                btnBuscar.Enabled = true;
+                btnBuscar.Text = "CARGAR SALA";
+            }
         }
 
         private void DibujarSala(int idSesion)

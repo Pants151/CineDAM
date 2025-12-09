@@ -270,7 +270,9 @@
             Controls.Add(btnConexion);
             Controls.Add(label6);
             Controls.Add(pnData);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
             Name = "FrmConfig";
             Text = "Configuración de BBDD";
             Load += FrmConnection_Load;

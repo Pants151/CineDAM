@@ -21,7 +21,15 @@ namespace CineDAM.Formularios
 
         private void AppCine_DatosActualizados(object sender, EventArgs e)
         {
-            this.Invoke((MethodInvoker)delegate { CargarDatos(); });
+            try
+            {
+                // Doble verificación y manejo de errores silencioso
+                if (this.IsHandleCreated && !this.IsDisposed)
+                {
+                    this.Invoke((MethodInvoker)delegate { CargarDatos(); });
+                }
+            }
+            catch { } // Si falla al invocar (ventana cerrándose), lo ignoramos.
         }
 
         private void CargarDatos()
@@ -71,12 +79,12 @@ namespace CineDAM.Formularios
             // Textos de Cabecera
             dgTabla.Columns["titulo"].HeaderText = "TÍTULO";
             dgTabla.Columns["duracion_min"].HeaderText = "MINUTOS";
-            dgTabla.Columns["clasificacion"].HeaderText = "EDAD";
+            dgTabla.Columns["clasificacion"].HeaderText = "CLASIFICACIÓN";
 
             // Anchos
             dgTabla.Columns["titulo"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // El título ocupa el espacio sobrante
             dgTabla.Columns["duracion_min"].Width = 100;
-            dgTabla.Columns["clasificacion"].Width = 100;
+            dgTabla.Columns["clasificacion"].Width = 150;
 
             // Altura de fila (para que se vea bien la foto)
             dgTabla.RowTemplate.Height = 100;

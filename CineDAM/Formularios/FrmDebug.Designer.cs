@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            btnRefrescar = new Button();
             chkRefrescar = new CheckBox();
+            btnRefrescar = new Button();
             txtDebug = new TextBox();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -45,15 +45,6 @@
             panel1.Size = new Size(800, 41);
             panel1.TabIndex = 0;
             // 
-            // btnRefrescar
-            // 
-            btnRefrescar.Location = new Point(12, 12);
-            btnRefrescar.Name = "btnRefrescar";
-            btnRefrescar.Size = new Size(75, 23);
-            btnRefrescar.TabIndex = 0;
-            btnRefrescar.Text = "Refrescar";
-            btnRefrescar.UseVisualStyleBackColor = true;
-            // 
             // chkRefrescar
             // 
             chkRefrescar.AutoSize = true;
@@ -63,6 +54,15 @@
             chkRefrescar.TabIndex = 1;
             chkRefrescar.Text = "Refrescar automáticamente";
             chkRefrescar.UseVisualStyleBackColor = true;
+            // 
+            // btnRefrescar
+            // 
+            btnRefrescar.Location = new Point(12, 12);
+            btnRefrescar.Name = "btnRefrescar";
+            btnRefrescar.Size = new Size(75, 23);
+            btnRefrescar.TabIndex = 0;
+            btnRefrescar.Text = "Refrescar";
+            btnRefrescar.UseVisualStyleBackColor = true;
             // 
             // txtDebug
             // 
@@ -84,8 +84,9 @@
             ClientSize = new Size(800, 450);
             Controls.Add(txtDebug);
             Controls.Add(panel1);
+            MinimumSize = new Size(600, 400);
             Name = "FrmDebug";
-            Text = "FrmDebug";
+            Text = "Depuración";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);

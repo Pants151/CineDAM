@@ -179,6 +179,7 @@
             Controls.Add(txtUsuario);
             Controls.Add(panelSide);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "FrmLogin";
             Opacity = 0.9D;
             StartPosition = FormStartPosition.CenterScreen;

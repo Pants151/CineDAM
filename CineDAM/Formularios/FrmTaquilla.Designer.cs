@@ -37,9 +37,9 @@
             flpPeliculas.Location = new Point(0, 0);
             flpPeliculas.Name = "flpPeliculas";
             flpPeliculas.Padding = new Padding(10);
-            flpPeliculas.Size = new Size(1000, 210); // Altura para pósters
+            flpPeliculas.Size = new Size(1000, 210);
             flpPeliculas.TabIndex = 0;
-            flpPeliculas.WrapContents = false; // Carrusel horizontal
+            flpPeliculas.WrapContents = false;
             // 
             // pnSesion
             // 
@@ -89,7 +89,7 @@
             lblSesion.ForeColor = Color.LightGray;
             lblSesion.Location = new Point(12, 16);
             lblSesion.Name = "lblSesion";
-            lblSesion.Size = new Size(57, 19);
+            lblSesion.Size = new Size(62, 19);
             lblSesion.TabIndex = 2;
             lblSesion.Text = "SESIÓN:";
             // 
@@ -114,11 +114,11 @@
             btnComprar.FlatStyle = FlatStyle.Flat;
             btnComprar.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnComprar.ForeColor = Color.White;
-            btnComprar.Location = new Point(828, 10);
+            btnComprar.Location = new Point(819, 10);
             btnComprar.Name = "btnComprar";
-            btnComprar.Size = new Size(160, 40);
+            btnComprar.Size = new Size(169, 40);
             btnComprar.TabIndex = 8;
-            btnComprar.Text = "VENDER ENTRADA";
+            btnComprar.Text = "COMPRAR ENTRADA";
             btnComprar.UseVisualStyleBackColor = false;
             btnComprar.Click += btnComprar_Click;
             // 
@@ -140,7 +140,7 @@
             lblPrecio.ForeColor = Color.Gold;
             lblPrecio.Location = new Point(12, 17);
             lblPrecio.Name = "lblPrecio";
-            lblPrecio.Size = new Size(137, 25);
+            lblPrecio.Size = new Size(132, 25);
             lblPrecio.TabIndex = 5;
             lblPrecio.Text = "Precio: 0,00 €";
             // 
@@ -149,7 +149,7 @@
             pnSala.AutoScroll = true;
             pnSala.BackColor = Color.FromArgb(45, 45, 48);
             pnSala.Dock = DockStyle.Fill;
-            pnSala.Location = new Point(0, 260); // Debajo de pelis y sesión
+            pnSala.Location = new Point(0, 260);
             pnSala.Name = "pnSala";
             pnSala.Size = new Size(1000, 330);
             pnSala.TabIndex = 3;

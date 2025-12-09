@@ -274,6 +274,8 @@
             Controls.Add(pnData);
             Controls.Add(pnStatus);
             Controls.Add(pnTools);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MinimumSize = new Size(966, 589);
             Name = "FrmBrowPeliculas";
             Text = "Gestión de Películas";
             FormClosing += FrmBrowEmisores_FormClosing;

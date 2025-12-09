@@ -98,19 +98,57 @@ namespace CineDAM.Formularios
         {
             if (cmbPelicula.SelectedValue == null)
             {
-                MessageBox.Show("Debe seleccionar una película.");
+                MessageBox.Show("Debe seleccionar una película.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
             if (cmbSala.SelectedValue == null)
             {
-                MessageBox.Show("Debe seleccionar una sala.");
+                MessageBox.Show("Debe seleccionar una sala.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
             if (numPrecio.Value < 0)
             {
-                MessageBox.Show("El precio no puede ser negativo.");
+                MessageBox.Show("El precio no puede ser negativo.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
+
+            // --- VALIDACIÓN DE HORARIO ---
+            try
+            {
+                // Usamos DATE_FORMAT para comparar solo Año-Mes-Día Hora:Minuto
+                // Esto ignora los segundos y evita que "18:00:00" sea diferente de "18:00:05"
+                string sql = "SELECT COUNT(*) FROM Sesion WHERE id_sala = @sala " +
+                             "AND DATE_FORMAT(hora_inicio, '%Y-%m-%d %H:%i') = DATE_FORMAT(@hora, '%Y-%m-%d %H:%i')";
+
+                DataRowView row = (DataRowView)_bs.Current;
+                if (!row.IsNew)
+                {
+                    sql += $" AND id_sesion != {row["id_sesion"]}";
+                }
+
+                using (var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, Program.appCine.LaConexion))
+                {
+                    cmd.Parameters.AddWithValue("@sala", cmbSala.SelectedValue);
+                    cmd.Parameters.AddWithValue("@hora", dtpHora.Value); // Pasamos la fecha completa, SQL se encarga de formatear
+
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (count > 0)
+                    {
+                        MessageBox.Show("¡Conflicto de Horario!\n\nYa existe una sesión programada en esta sala en el mismo día y hora.",
+                                        "Horario no disponible", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al validar horario: " + ex.Message);
+                Program.appCine.RegistrarLog("Error Validar Duplicados Sesion", ex.StackTrace);
+                return false;
+            }
+            // --------------------------------------------------
+
             return true;
         }
 

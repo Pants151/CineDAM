@@ -23,11 +23,15 @@ namespace CineDAM.Formularios
         // --- MANEJO SEGURO DE EVENTOS DE OTRAS VENTANAS ---
         private void AppCine_DatosActualizados(object sender, EventArgs e)
         {
-            // Verificamos si la ventana existe antes de intentar actualizarla
-            if (this.IsHandleCreated && !this.IsDisposed)
+            try
             {
-                this.Invoke((MethodInvoker)delegate { CargarDatos(); });
+                // Doble verificación y manejo de errores silencioso
+                if (this.IsHandleCreated && !this.IsDisposed)
+                {
+                    this.Invoke((MethodInvoker)delegate { CargarDatos(); });
+                }
             }
+            catch { } // Si falla al invocar (ventana cerrándose), lo ignoramos.
         }
 
         // --- DESUSCRIPCIÓN AL CERRAR (CRUCIAL PARA EVITAR ERRORES) ---

@@ -23,11 +23,11 @@ namespace CineDAM.Formularios
             }
             else
             {
-                txtServidor.Text = "";
+                txtServidor.Text = "localhost";
                 numPuerto.Value = 3306;
                 txtUsuario.Text = "root";
                 txtPassword.Text = "";
-                txtBaseDatos.Text = "cinedam";
+                txtBaseDatos.Text = "cinedam_db";
             }
 
             SetControlesEstadoConexion(false);

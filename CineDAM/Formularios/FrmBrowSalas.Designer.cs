@@ -270,6 +270,8 @@
             Controls.Add(pnData);
             Controls.Add(pnStatus);
             Controls.Add(pnTools);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MinimumSize = new Size(816, 489);
             Name = "FrmBrowSalas";
             Text = "Gestión de Salas";
             FormClosing += FrmBrowSalas_FormClosing;

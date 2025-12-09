@@ -66,6 +66,7 @@ namespace CineDAM.Formularios
             dgVentas.Columns["Pelicula"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgVentas.Columns["Butaca"].Width = 150;
             dgVentas.Columns["Precio"].Width = 100;
+            dgVentas.Columns["fecha_venta"].Width = 150;
 
             // Formatos
             if (dgVentas.Columns.Contains("fecha_venta"))
@@ -76,7 +77,7 @@ namespace CineDAM.Formularios
 
             if (dgVentas.Columns.Contains("Precio"))
             {
-                dgVentas.Columns["Precio"].DefaultCellStyle.Format = "C2";
+                dgVentas.Columns["Precio"].DefaultCellStyle.Format = "0.00 €";
                 dgVentas.Columns["Precio"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             }
 
@@ -106,13 +107,11 @@ namespace CineDAM.Formularios
             decimal total = 0;
             foreach (DataGridViewRow row in dgVentas.Rows)
             {
-                if (row.Cells["Precio"].Value != DBNull.Value)
-                {
-                    total += Convert.ToDecimal(row.Cells["Precio"].Value);
-                }
+                if (row.Cells["Precio"].Value != DBNull.Value) total += Convert.ToDecimal(row.Cells["Precio"].Value);
             }
-            lblTotal.Text = $"Total Recaudado: {total:C2}";
-            lblTotal.ForeColor = Color.LightGreen; // Verde neón para el dinero
+            // CAMBIO AQUÍ:
+            lblTotal.Text = $"Total Recaudado: {total:N2} €";
+            lblTotal.ForeColor = Color.LightGreen;
         }
 
         // --- EXPORTACIÓN ---

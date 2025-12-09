@@ -177,10 +177,35 @@ namespace CineDAM.Formularios
 
         private void AbrirFormularioHijo<T>() where T : Form, new()
         {
-            foreach (Form frm in this.MdiChildren) { if (frm is T) { if (frm.WindowState == FormWindowState.Minimized) frm.WindowState = FormWindowState.Normal; frm.Activate(); return; } }
+            // 1. Buscar si ya existe
+            foreach (Form frm in this.MdiChildren)
+            {
+                if (frm is T)
+                {
+                    if (frm.WindowState == FormWindowState.Minimized)
+                        frm.WindowState = FormWindowState.Normal;
+
+                    frm.Activate();
+                    return;
+                }
+            }
+
+            // 2. Crear nueva instancia
             T nuevoFrm = new T();
             nuevoFrm.MdiParent = this;
-            nuevoFrm.WindowState = FormWindowState.Maximized;
+
+            // 3. EXCEPCIÓN: Si es la Configuración, NO maximizar
+            if (nuevoFrm is FrmConfig)
+            {
+                nuevoFrm.WindowState = FormWindowState.Normal;
+                nuevoFrm.StartPosition = FormStartPosition.CenterScreen;
+            }
+            else
+            {
+                // El resto (Browsers, Taquilla) sí se maximizan
+                nuevoFrm.WindowState = FormWindowState.Maximized;
+            }
+
             nuevoFrm.Show();
         }
 

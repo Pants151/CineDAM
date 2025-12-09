@@ -106,9 +106,9 @@
             numPrecio.BorderStyle = BorderStyle.FixedSingle;
             numPrecio.DecimalPlaces = 2;
             numPrecio.ForeColor = Color.White;
-            numPrecio.Location = new Point(414, 80);
+            numPrecio.Location = new Point(472, 80);
             numPrecio.Name = "numPrecio";
-            numPrecio.Size = new Size(120, 23);
+            numPrecio.Size = new Size(62, 23);
             numPrecio.TabIndex = 7;
             numPrecio.TextAlign = HorizontalAlignment.Right;
             numPrecio.Value = new decimal(new int[] { 5, 0, 0, 0 });
@@ -151,31 +151,31 @@
             // 
             lblSala.AutoSize = true;
             lblSala.ForeColor = Color.LightGray;
-            lblSala.Location = new Point(358, 25);
+            lblSala.Location = new Point(373, 25);
             lblSala.Name = "lblSala";
-            lblSala.Size = new Size(28, 15);
+            lblSala.Size = new Size(31, 15);
             lblSala.TabIndex = 3;
-            lblSala.Text = "Sala";
+            lblSala.Text = "Sala:";
             // 
             // lblHora
             // 
             lblHora.AutoSize = true;
             lblHora.ForeColor = Color.LightGray;
-            lblHora.Location = new Point(39, 83);
+            lblHora.Location = new Point(34, 82);
             lblHora.Name = "lblHora";
-            lblHora.Size = new Size(33, 15);
+            lblHora.Size = new Size(41, 15);
             lblHora.TabIndex = 2;
-            lblHora.Text = "Hora";
+            lblHora.Text = "Fecha:";
             // 
             // lblPrecio
             // 
             lblPrecio.AutoSize = true;
             lblPrecio.ForeColor = Color.LightGray;
-            lblPrecio.Location = new Point(346, 82);
+            lblPrecio.Location = new Point(414, 82);
             lblPrecio.Name = "lblPrecio";
-            lblPrecio.Size = new Size(40, 15);
+            lblPrecio.Size = new Size(43, 15);
             lblPrecio.TabIndex = 1;
-            lblPrecio.Text = "Precio";
+            lblPrecio.Text = "Precio:";
             // 
             // lblPelicula
             // 
@@ -183,9 +183,9 @@
             lblPelicula.ForeColor = Color.LightGray;
             lblPelicula.Location = new Point(24, 25);
             lblPelicula.Name = "lblPelicula";
-            lblPelicula.Size = new Size(48, 15);
+            lblPelicula.Size = new Size(51, 15);
             lblPelicula.TabIndex = 0;
-            lblPelicula.Text = "Película";
+            lblPelicula.Text = "Película:";
             // 
             // FrmSesion
             // 
@@ -196,6 +196,9 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "FrmSesion";
             Text = "Sesión";
             Load += FrmSesion_Load;

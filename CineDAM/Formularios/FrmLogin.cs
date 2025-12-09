@@ -8,6 +8,7 @@ namespace CineDAM.Formularios
         public FrmLogin()
         {
             InitializeComponent();
+            this.AcceptButton = btnAcceder; // Enter para acceder
         }
 
         // --- LÓGICA DE LOGIN ---

@@ -15,9 +15,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmBrowSesiones));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             pnTools = new Panel();
             tsHerramientas = new ToolStrip();
             btnNew = new ToolStripButton();
@@ -270,9 +270,11 @@
             Controls.Add(pnData);
             Controls.Add(pnStatus);
             Controls.Add(pnTools);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MinimumSize = new Size(916, 589);
             Name = "FrmBrowSesiones";
             Text = "Gestión de Sesiones";
-            FormClosing += FrmBrowSesiones_FormClosing; // <-- NOMBRE CORRECTO
+            FormClosing += FrmBrowSesiones_FormClosing;
             Load += FrmBrowSesiones_Load;
             Shown += FrmBrowSesiones_Shown;
             pnTools.ResumeLayout(false);

@@ -23,11 +23,15 @@ namespace CineDAM.Formularios
         // --- PROTECCIÓN CONTRA ERROR DE INVOKE ---
         private void AppCine_DatosActualizados(object sender, EventArgs e)
         {
-            // Solo intentamos recargar si la ventana está viva y tiene un Handle
-            if (this.IsHandleCreated && !this.IsDisposed)
+            try
             {
-                this.Invoke((MethodInvoker)delegate { CargarDatos(); });
+                // Doble verificación y manejo de errores silencioso
+                if (this.IsHandleCreated && !this.IsDisposed)
+                {
+                    this.Invoke((MethodInvoker)delegate { CargarDatos(); });
+                }
             }
+            catch { } // Si falla al invocar (ventana cerrándose), lo ignoramos.
         }
 
         // --- DESUSCRIPCIÓN OBLIGATORIA AL CERRAR ---
@@ -83,7 +87,7 @@ namespace CineDAM.Formularios
             dgTabla.Columns["precio"].Width = 100;
 
             dgTabla.Columns["hora_inicio"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
-            dgTabla.Columns["precio"].DefaultCellStyle.Format = "C2";
+            dgTabla.Columns["precio"].DefaultCellStyle.Format = "0.00 €"; 
             dgTabla.Columns["precio"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             // Estilos Dark Mode
@@ -207,7 +211,10 @@ namespace CineDAM.Formularios
                 File.WriteAllLines(ruta, lineas, Encoding.UTF8);
                 MessageBox.Show("Exportado correctamente.");
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+            catch (Exception ex) { 
+                MessageBox.Show("Error: " + ex.Message); 
+                
+            }
         }
 
         private void Export_A_XML(string ruta)
@@ -217,7 +224,9 @@ namespace CineDAM.Formularios
                 ((DataTable)_bs.DataSource).WriteXml(ruta, XmlWriteMode.WriteSchema);
                 MessageBox.Show("Exportado correctamente.");
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+            catch (Exception ex) { 
+                MessageBox.Show("Error: " + ex.Message); 
+            }
         }
 
         // Métodos de ventana vacíos

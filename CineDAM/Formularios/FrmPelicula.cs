@@ -25,7 +25,7 @@ namespace CineDAM.Formularios
         {
             // 1. Cargar el combo de clasificación
             cmbClasificacion.Items.Clear();
-            cmbClasificacion.Items.AddRange(new string[] { "Todos", "Apta", "Mayores 7", "Mayores 12", "Mayores 16", "Mayores 18", "Mayores 19" });
+            cmbClasificacion.Items.AddRange(new string[] { "Apta", "Mayores 7", "Mayores 12", "Mayores 16", "Mayores 18", "Cine X" });
 
             // 2. Limpiar bindings antiguos
             txtTitulo.DataBindings.Clear();
@@ -70,6 +70,8 @@ namespace CineDAM.Formularios
                     catch (Exception ex)
                     {
                         MessageBox.Show("Error al cargar imagen: " + ex.Message);
+                        Program.appCine.RegistrarLog("Error al cargar la imagen", ex.StackTrace);
+
                     }
                 }
             }
@@ -127,7 +129,7 @@ namespace CineDAM.Formularios
                     cmd.ExecuteNonQuery();
                 }
 
-                // IMPORTANTE: Cancelar edición del BindingSource local para no confundir al grid padre
+                // Cancelar edición del BindingSource local para no confundir al grid padre
                 _bs.CancelEdit();
                 AppCine.NotificarCambioDatos(); // Avisar a todos
 
@@ -137,7 +139,7 @@ namespace CineDAM.Formularios
             catch (Exception ex)
             {
                 MessageBox.Show("Error al guardar: " + ex.Message);
-                Program.appCine.RegistrarLog("Error Guardar Película", ex.Message);
+                Program.appCine.RegistrarLog("Error Guardar Película", ex.StackTrace);
             }
         }
 
@@ -164,6 +166,41 @@ namespace CineDAM.Formularios
                 MessageBox.Show("Debe seleccionar una clasificación.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
+
+            // --- Comprobación de duplicados en BD ---
+            try
+            {
+                string sql = "SELECT COUNT(*) FROM Pelicula WHERE titulo = @titulo";
+
+                // Si estamos editando, excluimos la propia película que estamos tocando
+                // (si no, detectaría que "choca" consigo misma).
+                DataRowView row = (DataRowView)_bs.Current;
+                if (!row.IsNew)
+                {
+                    sql += $" AND id_pelicula != {row["id_pelicula"]}";
+                }
+
+                using (var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, Program.appCine.LaConexion))
+                {
+                    cmd.Parameters.AddWithValue("@titulo", txtTitulo.Text.Trim());
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (count > 0)
+                    {
+                        MessageBox.Show("Ya existe una película registrada con ese título.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        txtTitulo.Focus();
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al validar duplicados: " + ex.Message);
+                Program.appCine.RegistrarLog("Error Validar Duplicados Película", ex.StackTrace);
+                return false;
+            }
+            // ------------------------------------------------
+
             return true;
         }
     }

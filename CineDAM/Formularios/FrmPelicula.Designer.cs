@@ -17,6 +17,7 @@
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPelicula));
             panel1 = new Panel();
             btn_cancelar = new Button();
             btn_aceptar = new Button();
@@ -33,8 +34,8 @@
             label1 = new Label();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numDuracion).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbPoster).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numDuracion).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -43,7 +44,7 @@
             panel1.Controls.Add(btn_cancelar);
             panel1.Controls.Add(btn_aceptar);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 266);
+            panel1.Location = new Point(0, 329);
             panel1.Name = "panel1";
             panel1.Size = new Size(530, 60);
             panel1.TabIndex = 0;
@@ -77,7 +78,7 @@
             btn_aceptar.Name = "btn_aceptar";
             btn_aceptar.Size = new Size(100, 30);
             btn_aceptar.TabIndex = 0;
-            btn_aceptar.Text = "ACEPTAR";
+            btn_aceptar.Text = "Aceptar";
             btn_aceptar.UseVisualStyleBackColor = false;
             btn_aceptar.Click += btn_aceptar_Click;
             // 
@@ -98,7 +99,7 @@
             panel2.ForeColor = Color.White;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(530, 266);
+            panel2.Size = new Size(530, 329);
             panel2.TabIndex = 1;
             // 
             // btnSeleccionarImagen
@@ -119,7 +120,7 @@
             // 
             pbPoster.BackColor = Color.FromArgb(30, 30, 30);
             pbPoster.BorderStyle = BorderStyle.FixedSingle;
-            pbPoster.Location = new Point(334, 22);
+            pbPoster.Location = new Point(334, 58);
             pbPoster.Name = "pbPoster";
             pbPoster.Size = new Size(164, 226);
             pbPoster.SizeMode = PictureBoxSizeMode.Zoom;
@@ -155,11 +156,11 @@
             numDuracion.BackColor = Color.FromArgb(40, 40, 40);
             numDuracion.BorderStyle = BorderStyle.FixedSingle;
             numDuracion.ForeColor = Color.White;
-            numDuracion.Location = new Point(98, 172);
+            numDuracion.Location = new Point(254, 172);
             numDuracion.Maximum = new decimal(new int[] { 600, 0, 0, 0 });
             numDuracion.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numDuracion.Name = "numDuracion";
-            numDuracion.Size = new Size(213, 23);
+            numDuracion.Size = new Size(57, 23);
             numDuracion.TabIndex = 5;
             numDuracion.Value = new decimal(new int[] { 90, 0, 0, 0 });
             // 
@@ -171,7 +172,7 @@
             txtTitulo.Location = new Point(98, 22);
             txtTitulo.MaxLength = 100;
             txtTitulo.Name = "txtTitulo";
-            txtTitulo.Size = new Size(213, 23);
+            txtTitulo.Size = new Size(400, 23);
             txtTitulo.TabIndex = 4;
             // 
             // label4
@@ -180,19 +181,19 @@
             label4.ForeColor = Color.LightGray;
             label4.Location = new Point(18, 74);
             label4.Name = "label4";
-            label4.Size = new Size(74, 15);
+            label4.Size = new Size(77, 15);
             label4.TabIndex = 3;
-            label4.Text = "Clasificación";
+            label4.Text = "Clasificación:";
             // 
             // lblDuracion
             // 
             lblDuracion.AutoSize = true;
             lblDuracion.ForeColor = Color.LightGray;
-            lblDuracion.Location = new Point(37, 174);
+            lblDuracion.Location = new Point(113, 174);
             lblDuracion.Name = "lblDuracion";
-            lblDuracion.Size = new Size(55, 15);
+            lblDuracion.Size = new Size(126, 15);
             lblDuracion.TabIndex = 2;
-            lblDuracion.Text = "Duración";
+            lblDuracion.Text = "Duración (en minutos)";
             // 
             // label2
             // 
@@ -200,9 +201,9 @@
             label2.ForeColor = Color.LightGray;
             label2.Location = new Point(52, 125);
             label2.Name = "label2";
-            label2.Size = new Size(40, 15);
+            label2.Size = new Size(43, 15);
             label2.TabIndex = 1;
-            label2.Text = "Póster";
+            label2.Text = "Póster:";
             // 
             // label1
             // 
@@ -210,26 +211,30 @@
             label1.ForeColor = Color.LightGray;
             label1.Location = new Point(54, 25);
             label1.Name = "label1";
-            label1.Size = new Size(38, 15);
+            label1.Size = new Size(41, 15);
             label1.TabIndex = 0;
-            label1.Text = "Título";
+            label1.Text = "Título:";
             // 
             // FrmPelicula
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(15, 15, 15);
-            ClientSize = new Size(530, 326);
+            ClientSize = new Size(530, 389);
             Controls.Add(panel2);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "FrmPelicula";
-            Text = "Editar Película";
+            Text = "Película";
             Load += FrmPelicula_Load;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numDuracion).EndInit();
             ((System.ComponentModel.ISupportInitialize)pbPoster).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numDuracion).EndInit();
             ResumeLayout(false);
         }
 

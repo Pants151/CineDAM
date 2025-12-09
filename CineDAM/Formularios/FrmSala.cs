@@ -90,6 +90,39 @@ namespace CineDAM.Formularios
                 MessageBox.Show("La sala debe tener al menos 1 fila y 1 columna.");
                 return false;
             }
+
+            // Comprobación de duplicados
+            try
+            {
+                string sql = "SELECT COUNT(*) FROM Sala WHERE nombre = @nombre";
+
+                DataRowView row = (DataRowView)_bs.Current;
+                if (!row.IsNew)
+                {
+                    sql += $" AND id_sala != {row["id_sala"]}";
+                }
+
+                using (var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, Program.appCine.LaConexion))
+                {
+                    cmd.Parameters.AddWithValue("@nombre", txtNombre.Text.Trim());
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (count > 0)
+                    {
+                        MessageBox.Show("Ya existe una sala con ese nombre.", "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        txtNombre.Focus();
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al validar duplicados: " + ex.Message);
+                Program.appCine.RegistrarLog("Error Validar Duplicados Sala", ex.StackTrace);
+                return false;
+            }
+            // -----------------------------------------
+
             return true;
         }
     }
